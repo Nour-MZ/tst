@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Company Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/main_dashboard.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/dashboard.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/view_application.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Raleway:wght@400;500;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h2 class="sidebar-title">Company Dashboard</h2>
+      </div>
+      <div class="sidebar-content">
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item {{ 'active' if request.endpoint == 'company_dashboard' else '' }}">
+            <a href="{{ url_for('company_dashboard') }}" class="sidebar-menu-link">
+              <i class="fas fa-tachometer-alt"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+      
+          <li class="sidebar-menu-item {{ 'active' if request.endpoint == 'post_job' else '' }}">
+            <a href="{{ url_for('post_job') }}" class="sidebar-menu-link">
+              <i class="fas fa-plus-circle"></i>
+              <span>Post New Job</span>
+            </a>
+          </li>
+
+          
+    
+        </ul>
+      </div>
+      <div class="sidebar-footer">
+        <ul class="sidebar-menu">
+          <li class="sidebar-menu-item">
+            <a href="#" class="sidebar-menu-link">
+              <i class="fas fa-sign-out-alt"></i>
+              <span>Logout</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    {% block content %}{% endblock %}
+
+  </div>
+
+
+
+<script src="{{ url_for('static', filename='assets/js/dashboard.js') }}"></script>
+<script src="{{ url_for('static', filename='assets/js/post_job.js') }}"></script>
+</html>

@@ -1,0 +1,1392 @@
+{% extends "base_hr.html" %}
+
+{% block content %}
+  <div class="main-content">
+    <header class="dashboard-header">
+      <div class="header-left">
+        <button class="sidebar-toggle" id="sidebarToggle">
+          <i class="fas fa-bars"></i>
+        </button>
+        <h1 class="dashboard-title">Offered Jobs</h1>
+      </div>
+      <div class="header-actions">
+        <div class="search-container">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" id="jobSearch" placeholder="Search jobs..." class="search-input">
+        </div>
+        <button class="btn-outline" id="filterBtn">
+          <i class="fas fa-filter"></i> Filter
+        </button>
+      
+      </div>
+    </header>
+
+    <main class="dashboard-main">
+      <!-- Stats Overview -->
+      <div class="stats-container">
+        <div class="stat-card">
+          <div class="stat-icon">
+            <i class="fas fa-briefcase"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">{{ stats.total_jobs or 0 }}</div>
+            <div class="stat-label">Total Jobs</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon active-icon">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">{{ stats.active_jobs or 0 }}</div>
+            <div class="stat-label">Active Jobs</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon closed-icon">
+            <i class="fas fa-times-circle"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">{{ stats.closed_jobs or 0 }}</div>
+            <div class="stat-label">Closed Jobs</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon applicants-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">{{ stats.total_applications}}</div>
+            <div class="stat-label">Total Applications</div>
+          </div>
+          <div class="stat-content">
+            <div class="stat-value">{{ stats.unique_applicants or 0 }}</div>
+            <div class="stat-label">Unique Applicants</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter Options -->
+      <div class="filter-options" id="filterOptions">
+        <div class="filter-section">
+          <h3>Filter Jobs</h3>
+          <div class="filter-row">
+            <div class="filter-group">
+              <label for="statusFilter">Status</label>
+              <select id="statusFilter" class="filter-select">
+                <option value="all">All Statuses</option>
+                <option value="open">Open</option>
+                <option value="closed">Closed</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="departmentFilter">Department</label>
+              <select id="departmentFilter" class="filter-select">
+                <option value="all">All Departments</option>
+                <option value="1">Engineering</option>
+                <option value="2">Marketing</option>
+                <option value="3">Sales</option>
+                <option value="4">Human Resources</option>
+                <option value="5">Finance</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="levelFilter">Job Level</label>
+              <select id="levelFilter" class="filter-select">
+                <option value="all">All Levels</option>
+                <option value="entry">Entry Level</option>
+                <option value="mid">Mid Level</option>
+                <option value="senior">Senior</option>
+                <option value="executive">Executive</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="years_experienceFilter">years_experience</label>
+              <select id="years_experienceFilter" class="filter-select">
+                <option value="all">Any years_experience</option>
+                <option value="0-1">0-1 years</option>
+                <option value="1-3">1-3 years</option>
+                <option value="3-5">3-5 years</option>
+                <option value="5+">5+ years</option>
+              </select>
+            </div>
+          </div>
+          <div class="filter-actions">
+            <button class="btn-outline" id="resetFilterBtn">Reset</button>
+            <button class="btn-primary" id="applyFilterBtn">Apply Filters</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Jobs List -->
+      <div class="jobs-container">
+        <div class="section-header">
+          <h2>All Job Listings</h2>
+          <div class="view-options">
+            <button class="view-option active" data-view="card">
+              <i class="fas fa-th-large"></i>
+            </button>
+            <button class="view-option" data-view="list">
+              <i class="fas fa-list"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="jobs-grid" id="jobsView">
+          {% for job in jobs %}
+          <div class="job-card" 
+               data-id="{{ job.id }}" 
+               data-department="{{ job.department_name }}" 
+               data-level="{{ job.job_level | lower }}" 
+               data-years_experience="{{ job.years_experience | replace(' years', '') }}" 
+               data-status="{{ job.status | lower }}">
+          
+            <div class="job-status {{ job.status | lower }}">{{ job.status }}</div>
+            <div class="job-header">
+              <h3 class="job-title">{{ job.job_title }}</h3>
+            </div>
+            <div class="job-meta">
+              <div class="job-meta-item"><i class="fas fa-building"></i><span>{{ job.department_name }}</span></div>
+              <div class="job-meta-item"><i class="fas fa-layer-group"></i><span>{{ job.job_level }}</span></div>
+              <div class="job-meta-item"><i class="fas fa-clock"></i><span>{{ job.years_experience }} years</span></div>
+              <div class="job-meta-item"><i class="fas fa-calendar-alt"></i><span>Posted: {{ job.created_at }}</span></div>
+            </div>
+          
+            <div class="job-details">
+              {% for section, content in [("Requirements", job.requirements), ("Responsibilities", job.responsibilities), ("Required Certifications", job.required_certifications)] %}
+              <div class="job-detail-section">
+                <div class="detail-header" data-toggle="{{ section | lower | replace(' ', '-') }}-{{ job.id }}">
+                  <h4>{{ section }}</h4>
+                  <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="detail-content" id="{{ section | lower | replace(' ', '-') }}-{{ job.id }}">
+                  <ul class="detail-list">
+                    {% for item in content %}
+                    <li>{{ item }}</li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          
+            <div class="job-actions">
+              <a href="{{ url_for('hr_view_applied_applicant', job_id=job.id) }}">
+                <button class="btn-outline view-applicants-btn" data-job-id="{{ job.id }}">
+                  <i class="fas fa-users"></i> Schedule HR Interview
+                </button>
+              </a>
+            </div>
+            <div class="job-actions">
+              <a href="{{ url_for('hr_view_technical_interview_applicant', job_id=job.id) }}">
+                <button class="btn-outline view-applicants-btn" data-job-id="{{ job.id }}">
+                  <i class="fas fa-users"></i> Schedule Technical Interview
+                </button>
+              </a>
+            </div>
+          </div>
+          {% endfor %}
+          </div>
+          
+        <!-- Pagination -->
+        <div class="pagination-container">
+          <div class="pagination-info">
+            Showing <span id="showingStart">1</span>-<span id="showingEnd">4</span> of <span id="totalItems">24</span> jobs
+          </div>
+          <div class="pagination">
+            <button class="pagination-btn" disabled>
+              <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="pagination-btn active">1</button>
+            <button class="pagination-btn">2</button>
+            <button class="pagination-btn">3</button>
+            <button class="pagination-btn">4</button>
+            <button class="pagination-btn">5</button>
+            <button class="pagination-btn">6</button>
+            <button class="pagination-btn">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Toggle filter options
+      const filterBtn = document.getElementById('filterBtn');
+      const filterOptions = document.getElementById('filterOptions');
+      
+      filterBtn.addEventListener('click', function() {
+        filterOptions.classList.toggle('show');
+      });
+      
+      // Close filter options when clicking outside
+      document.addEventListener('click', function(event) {
+        if (!event.target.closest('#filterOptions') && !event.target.closest('#filterBtn')) {
+          filterOptions.classList.remove('show');
+        }
+      });
+      
+      // Reset filter button
+      const resetFilterBtn = document.getElementById('resetFilterBtn');
+      resetFilterBtn.addEventListener('click', function() {
+        document.getElementById('statusFilter').value = 'all';
+        document.getElementById('departmentFilter').value = 'all';
+        document.getElementById('levelFilter').value = 'all';
+        document.getElementById('years_experienceFilter').value = 'all';
+      });
+      
+      // Apply filter button
+      const applyFilterBtn = document.getElementById('applyFilterBtn');
+      applyFilterBtn.addEventListener('click', function() {
+        filterOptions.classList.remove('show');
+        filterJobs();
+      });
+      
+      // Toggle job details sections
+      document.addEventListener('click', function(event) {
+        if (event.target.closest('.detail-header')) {
+          const header = event.target.closest('.detail-header');
+          const contentId = header.getAttribute('data-toggle');
+          const content = document.getElementById(contentId);
+          
+          content.classList.toggle('show');
+          const icon = header.querySelector('i');
+          icon.classList.toggle('fa-chevron-down');
+          icon.classList.toggle('fa-chevron-up');
+        }
+      });
+      
+      // View options (card/list)
+      const viewOptions = document.querySelectorAll('.view-option');
+      const jobsView = document.getElementById('jobsView');
+      
+      viewOptions.forEach(option => {
+        option.addEventListener('click', function() {
+          viewOptions.forEach(opt => opt.classList.remove('active'));
+          this.classList.add('active');
+          
+          const viewType = this.getAttribute('data-view');
+          jobsView.className = viewType === 'card' ? 'jobs-grid' : 'jobs-list';
+        });
+      });
+      
+      // Search functionality
+      const jobSearch = document.getElementById('jobSearch');
+      jobSearch.addEventListener('input', function() {
+        filterJobs();
+      });
+      
+      // Filter jobs function
+      function filterJobs() {
+        const searchTerm = jobSearch.value.toLowerCase();
+        const statusFilter = document.getElementById('statusFilter').value;
+        const departmentFilter = document.getElementById('departmentFilter').value;
+        const levelFilter = document.getElementById('levelFilter').value;
+        const years_experienceFilter = document.getElementById('years_experienceFilter').value;
+        
+        const jobCards = document.querySelectorAll('.job-card');
+        
+        jobCards.forEach(card => {
+          const title = card.querySelector('.job-title').textContent.toLowerCase();
+          const department = card.getAttribute('data-department');
+          const level = card.getAttribute('data-level');
+          const years_experience = card.getAttribute('data-years_experience');
+          const status = card.getAttribute('data-status');
+          
+          let visible = true;
+          
+          // Search term filter
+          if (searchTerm && !title.includes(searchTerm)) {
+            visible = false;
+          }
+          
+          // Status filter
+          if (statusFilter !== 'all' && status !== statusFilter) {
+            visible = false;
+          }
+          
+          // Department filter
+          if (departmentFilter !== 'all' && department !== departmentFilter) {
+            visible = false;
+          }
+          
+          // Level filter
+          if (levelFilter !== 'all' && level !== levelFilter) {
+            visible = false;
+          }
+          
+          // years_experience filter
+          if (years_experienceFilter !== 'all' && years_experience !== years_experienceFilter) {
+            visible = false;
+          }
+          
+          card.style.display = visible ? '' : 'none';
+        });
+        
+        updatePaginationInfo();
+      }
+      
+      // Update pagination info
+      function updatePaginationInfo() {
+        const visibleJobs = document.querySelectorAll('.job-card[style=""]').length;
+        const totalJobs = document.querySelectorAll('.job-card').length;
+        
+        document.getElementById('showingStart').textContent = visibleJobs > 0 ? '1' : '0';
+        document.getElementById('showingEnd').textContent = visibleJobs;
+        document.getElementById('totalItems').textContent = totalJobs;
+      }
+      
+      // Applicants modal
+      const viewApplicantsBtns = document.querySelectorAll('.view-applicants-btn');
+      const applicantsModal = document.getElementById('applicantsModal');
+      const closeModal = document.querySelector('.close-modal');
+      const closeModalBtn = document.getElementById('closeModalBtn');
+      
+      viewApplicantsBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+          const jobId = this.getAttribute('data-job-id');
+          const jobTitle = this.closest('.job-card').querySelector('.job-title').textContent;
+          
+          document.getElementById('modalJobTitle').textContent = `Applicants for ${jobTitle}`;
+          applicantsModal.style.display = 'block';
+        });
+      });
+      
+      closeModal.addEventListener('click', function() {
+        applicantsModal.style.display = 'none';
+      });
+      
+      closeModalBtn.addEventListener('click', function() {
+        applicantsModal.style.display = 'none';
+      });
+      
+      window.addEventListener('click', function(event) {
+        if (event.target === applicantsModal) {
+          applicantsModal.style.display = 'none';
+        }
+      });
+      
+      // Dropdown menus
+      document.addEventListener('click', function(event) {
+        if (event.target.closest('.dropdown-toggle')) {
+          const dropdown = event.target.closest('.action-dropdown');
+          const dropdownMenu = dropdown.querySelector('.dropdown-menu');
+          
+          // Close all other dropdowns
+          document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            if (menu !== dropdownMenu) {
+              menu.classList.remove('show');
+            }
+          });
+          
+          dropdownMenu.classList.toggle('show');
+          event.stopPropagation();
+        } else if (!event.target.closest('.dropdown-menu')) {
+          document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.classList.remove('show');
+          });
+        }
+      });
+    });
+  </script>
+
+  <style>
+    /* Variables */
+    :root {
+      --default-font: "Roboto", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+      --heading-font: "Raleway", sans-serif;
+      --nav-font: "Poppins", sans-serif;
+      
+      --background-color: #f4fafd;
+      --default-color: #444444;
+      --heading-color: #222222;
+      --accent-color: #3a6470;
+      --surface-color: #ffffff;
+      --contrast-color: #ffffff;
+      
+      --primary-color: #3a6470;
+      --primary-light: rgba(58, 100, 112, 0.1);
+      --primary-dark: #2a4b55;
+      --secondary-color: #5a8a96;
+      --success-color: #2e7d32;
+      --success-light: #e3f7e8;
+      --warning-color: #ed6c02;
+      --warning-light: #fff4e5;
+      --error-color: #c62828;
+      --error-light: #ffebee;
+      --info-color: #0288d1;
+      --info-light: #e1f5fe;
+      
+      --gray-50: #fafafa;
+      --gray-100: #f5f5f5;
+      --gray-200: #eeeeee;
+      --gray-300: #e0e0e0;
+      --gray-400: #bdbdbd;
+      --gray-500: #9e9e9e;
+      --gray-600: #757575;
+      --gray-700: #616161;
+      --gray-800: #424242;
+      --gray-900: #212121;
+      
+      --border-radius: 8px;
+      --card-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      --transition: all 0.3s ease;
+    }
+
+    /* General Styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--default-font);
+      color: var(--default-color);
+      background-color: var(--background-color);
+      line-height: 1.5;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: var(--heading-font);
+      color: var(--heading-color);
+    }
+
+    a {
+      color: var(--accent-color);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    a:hover {
+      color: var(--primary-dark);
+    }
+
+    ul {
+      list-style-position: inside;
+      padding-left: 1rem;
+    }
+
+    /* Main Content */
+    .main-content {
+      min-height: 100vh;
+    }
+
+    /* Dashboard Header */
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 2rem;
+      background-color: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .dashboard-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--gray-800);
+      margin: 0;
+    }
+
+    .sidebar-toggle {
+      background: none;
+      border: none;
+      color: var(--gray-600);
+      font-size: 1.25rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 50%;
+      transition: var(--transition);
+    }
+
+    .sidebar-toggle:hover {
+      background-color: var(--gray-200);
+      color: var(--gray-800);
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+    
+    .search-container {
+      position: relative;
+      width: 300px;
+    }
+    
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray-500);
+    }
+    
+    .search-input {
+      width: 100%;
+      padding: 0.5rem 0.75rem 0.5rem 2.25rem;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--border-radius);
+      font-size: 0.875rem;
+      transition: var(--transition);
+    }
+    
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(58, 100, 112, 0.1);
+    }
+    
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: var(--border-radius);
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+    }
+    
+    .btn-outline {
+      background-color: transparent;
+      color: var(--gray-700);
+      border: 1px solid var(--gray-300);
+      padding: 0.5rem 1rem;
+      border-radius: var(--border-radius);
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    
+    .btn-outline:hover {
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+    }
+    
+    .btn-icon {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--border-radius);
+      background-color: var(--gray-100);
+      color: var(--gray-700);
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .btn-icon:hover {
+      background-color: var(--gray-200);
+      color: var(--gray-900);
+    }
+
+    /* Dashboard Main */
+    .dashboard-main {
+      padding: 1.5rem 2rem;
+      display: grid;
+      gap: 1.5rem;
+    }
+    
+    /* Stats Container */
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+    
+    .stat-card {
+      background-color: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--card-shadow);
+      padding: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: var(--transition);
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background-color: var(--primary-light);
+      color: var(--primary-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+    
+    .active-icon {
+      background-color: var(--success-light);
+      color: var(--success-color);
+    }
+    
+    .closed-icon {
+      background-color: var(--error-light);
+      color: var(--error-color);
+    }
+    
+    .applicants-icon {
+      background-color: var(--warning-light);
+      color: var(--warning-color);
+    }
+    
+    .stat-content {
+      flex: 1;
+    }
+    
+    .stat-value {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--gray-800);
+      line-height: 1.2;
+    }
+    
+    .stat-label {
+      color: var(--gray-600);
+      font-size: 0.875rem;
+    }
+    
+    /* Filter Options */
+    .filter-options {
+      background-color: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--card-shadow);
+      padding: 1.25rem;
+      display: none;
+    }
+    
+    .filter-options.show {
+      display: block;
+    }
+    
+    .filter-section h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+    
+    .filter-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    
+    .filter-group label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--gray-700);
+    }
+    
+    .filter-select {
+      padding: 0.5rem;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--border-radius);
+      font-size: 0.875rem;
+      transition: var(--transition);
+    }
+    
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+    }
+    
+    .filter-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+    }
+    
+    /* Jobs Container */
+    .jobs-container {
+      background-color: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--card-shadow);
+      padding: 1.25rem;
+    }
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+    
+    .section-header h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--gray-800);
+      margin: 0;
+    }
+    
+    .view-options {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .view-option {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--border-radius);
+      background-color: var(--gray-100);
+      color: var(--gray-700);
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .view-option:hover {
+      background-color: var(--gray-200);
+      color: var(--gray-900);
+    }
+    
+    .view-option.active {
+      background-color: var(--primary-light);
+      color: var(--primary-color);
+    }
+    
+    /* Jobs Grid */
+    .jobs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    /* Jobs List */
+    .jobs-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .jobs-list .job-card {
+      display: grid;
+      grid-template-columns: 120px 1fr auto;
+      align-items: center;
+    }
+    
+    .jobs-list .job-header {
+      margin-bottom: 0.5rem;
+    }
+    
+    .jobs-list .job-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    
+    .jobs-list .job-details {
+      display: none;
+    }
+    
+    /* Job Card */
+    .job-card {
+      background-color: white;
+      border-radius: var(--border-radius);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      padding: 1.25rem;
+      position: relative;
+      transition: var(--transition);
+      border: 1px solid var(--gray-200);
+    }
+    
+    .job-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      border-color: var(--gray-300);
+    }
+    
+    .job-status {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.25rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    
+    .job-status.open {
+      background-color: var(--success-light);
+      color: var(--success-color);
+    }
+    
+    .job-status.closed {
+      background-color: var(--error-light);
+      color: var(--error-color);
+    }
+    
+    .job-header {
+      margin-bottom: 1rem;
+    }
+    
+    .job-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--gray-800);
+      margin: 0 0 0.25rem 0;
+    }
+    
+    .job-id {
+      font-size: 0.75rem;
+      color: var(--gray-600);
+    }
+    
+    .job-meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    
+    .job-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--gray-700);
+      font-size: 0.875rem;
+    }
+    
+    .job-meta-item i {
+      color: var(--gray-500);
+      width: 16px;
+    }
+    
+    .job-details {
+      margin-bottom: 1.25rem;
+    }
+    
+    .job-detail-section {
+      margin-bottom: 0.75rem;
+    }
+    
+    .job-detail-section:last-child {
+      margin-bottom: 0;
+    }
+    
+    .detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0.75rem;
+      background-color: var(--gray-50);
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .detail-header:hover {
+      background-color: var(--gray-100);
+    }
+    
+    .detail-header h4 {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin: 0;
+    }
+    
+    .detail-content {
+      display: none;
+      padding: 0.75rem;
+      font-size: 0.875rem;
+      color: var(--gray-700);
+    }
+    
+    .detail-content.show {
+      display: block;
+    }
+    
+    .detail-list {
+      margin: 0;
+      padding: 0;
+      list-style-type: disc;
+    }
+    
+    .detail-list li {
+      margin-bottom: 0.5rem;
+    }
+    
+    .detail-list li:last-child {
+      margin-bottom: 0;
+    }
+    
+    .job-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    /* Action Dropdown */
+    .action-dropdown {
+      position: relative;
+    }
+    
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background-color: white;
+      border-radius: var(--border-radius);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      min-width: 180px;
+      z-index: 10;
+      padding: 0.5rem 0;
+      display: none;
+    }
+    
+    .dropdown-menu.show {
+      display: block;
+    }
+    
+    .dropdown-menu-right {
+      right: 0;
+      left: auto;
+    }
+    
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 1rem;
+      color: var(--gray-700);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: var(--transition);
+    }
+    
+    .dropdown-item:hover {
+      background-color: var(--gray-100);
+    }
+    
+    .dropdown-item i {
+      width: 16px;
+      text-align: center;
+    }
+    
+    .dropdown-item.text-danger {
+      color: var(--error-color);
+    }
+    
+    .dropdown-item.text-danger:hover {
+      background-color: var(--error-light);
+    }
+    
+    /* Pagination */
+    .pagination-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .pagination-info {
+      font-size: 0.875rem;
+      color: var(--gray-600);
+    }
+    
+    .pagination {
+      display: flex;
+      gap: 0.25rem;
+    }
+    
+    .pagination-btn {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--border-radius);
+      background-color: var(--gray-100);
+      color: var(--gray-700);
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .pagination-btn:hover:not(:disabled) {
+      background-color: var(--gray-200);
+      color: var(--gray-900);
+    }
+    
+    .pagination-btn.active {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    .pagination-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      overflow: auto;
+    }
+    
+    .modal-content {
+      background-color: white;
+      margin: 5% auto;
+      padding: 0;
+      border-radius: var(--border-radius);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+      max-width: 600px;
+      width: 90%;
+      position: relative;
+    }
+    
+    .modal-lg {
+      max-width: 900px;
+    }
+    
+    .modal-header {
+      padding: 1.25rem;
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .modal-header h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 0;
+    }
+    
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--gray-500);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .close-modal:hover {
+      color: var(--error-color);
+    }
+    
+    .modal-body {
+      padding: 1.25rem;
+    }
+    
+    .modal-footer {
+      padding: 1.25rem;
+      border-top: 1px solid var(--gray-200);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+    }
+    
+    /* Applicants Stats */
+    .applicants-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .applicant-stat {
+      background-color: var(--gray-50);
+      border-radius: var(--border-radius);
+      padding: 1rem;
+      text-align: center;
+    }
+    
+    .applicant-stat .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--gray-800);
+      margin-bottom: 0.25rem;
+    }
+    
+    .applicant-stat .stat-label {
+      font-size: 0.875rem;
+      color: var(--gray-600);
+    }
+    
+    /* Applicants Filter */
+    .applicants-filter {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+    
+    .filter-dropdown {
+      position: relative;
+    }
+    
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+    }
+    
+    /* Applicants Table */
+    .applicants-table-container {
+      overflow-x: auto;
+      margin-bottom: 1.25rem;
+    }
+    
+    .applicants-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .applicants-table th {
+      background-color: var(--gray-50);
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-weight: 600;
+      color: var(--gray-700);
+      border-bottom: 1px solid var(--gray-200);
+      white-space: nowrap;
+    }
+    
+    .applicants-table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--gray-200);
+      vertical-align: middle;
+    }
+    
+    .applicants-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .applicants-table tr:hover {
+      background-color: var(--gray-50);
+    }
+    
+    /* Applicant Info */
+    .applicant-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .applicant-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--primary-color);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    
+    .applicant-details {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .applicant-name {
+      font-weight: 600;
+      color: var(--gray-800);
+    }
+    
+    .applicant-email {
+      font-size: 0.75rem;
+      color: var(--gray-600);
+    }
+    
+    /* Match Score */
+    .match-score {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      width: 100%;
+      max-width: 150px;
+    }
+    
+    .score-value {
+      font-weight: 600;
+      min-width: 40px;
+    }
+    
+    .score-bar {
+      flex-grow: 1;
+      height: 8px;
+      background-color: var(--gray-200);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    
+    .score-fill {
+      height: 100%;
+      border-radius: 4px;
+    }
+    
+    /* Status Badge */
+    .status-badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    
+    .status-badge.qualified {
+      background-color: var(--success-light);
+      color: var(--success-color);
+    }
+    
+    .status-badge.unqualified {
+      background-color: var(--error-light);
+      color: var(--error-color);
+    }
+    
+    .status-badge.interviewed {
+      background-color: var(--info-light);
+      color: var(--info-color);
+    }
+    
+    /* Table Actions */
+    .table-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    /* Responsive Styles */
+    @media (max-width: 992px) {
+      .jobs-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1rem;
+      }
+      
+      .header-actions {
+        width: 100%;
+        flex-wrap: wrap;
+      }
+      
+      .search-container {
+        width: 100%;
+      }
+      
+      .dashboard-main {
+        padding: 1rem;
+      }
+      
+      .jobs-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .jobs-list .job-card {
+        grid-template-columns: 1fr;
+      }
+      
+      .job-meta {
+        grid-template-columns: 1fr 1fr;
+      }
+      
+      .applicants-filter {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      
+      .applicants-filter .search-container {
+        width: 100%;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .job-meta {
+        grid-template-columns: 1fr;
+      }
+      
+      .job-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      
+      .job-actions .btn-outline {
+        width: 100%;
+        justify-content: center;
+      }
+      
+      .action-dropdown {
+        align-self: flex-end;
+      }
+      
+      .pagination-container {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+      }
+      
+      .pagination {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+ {% endblock %}

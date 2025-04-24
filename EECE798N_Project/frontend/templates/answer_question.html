@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Answer Questions</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&family=Roboto:wght@300;400;500&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/answer_question.css') }}">
+  <style>
+    .question-card {
+      background-color: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--card-shadow);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .question-card.active {
+      border: 2px solid var(--primary-color);
+    }
+    
+    .question-number {
+      display: inline-block;
+      background-color: var(--primary-color);
+      color: white;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 30px;
+      margin-right: 10px;
+      font-weight: 600;
+    }
+    
+    .form-actions {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2rem;
+    }
+    
+    .form-actions-right {
+      display: flex;
+      gap: 1rem;
+    }
+    
+    .progress-container {
+      margin-bottom: 2rem;
+      background-color: white;
+      border-radius: var(--border-radius);
+      padding: 1rem;
+      box-shadow: var(--card-shadow);
+    }
+    
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+    
+    .progress-title {
+      font-weight: 600;
+      color: var(--gray-800);
+    }
+    
+    .progress-stats {
+      font-size: 0.875rem;
+      color: var(--gray-600);
+    }
+    
+    .progress-bar {
+      height: 8px;
+      background-color: var(--gray-200);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background-color: var(--primary-color);
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+    
+    .question-navigation {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    
+    .question-nav-item {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background-color: var(--gray-100);
+      color: var(--gray-700);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .question-nav-item:hover {
+      background-color: var(--gray-200);
+    }
+    
+    .question-nav-item.active {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    .question-nav-item.completed {
+      background-color: var(--success-light);
+      color: var(--success-color);
+    }
+    
+    .draft-notice {
+      background-color: var(--info-light);
+      color: var(--info-color);
+      padding: 0.75rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    @media (max-width: 768px) {
+      .form-actions {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .form-actions-right {
+        justify-content: space-between;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="main-content">
+    <header class="dashboard-header">
+      <div class="header-left">
+        <a href="{{ url_for('weekly_questions') }}" class="back-button">
+          <i class="fas fa-arrow-left"></i>
+        </a>
+        <h1 class="dashboard-title">Weekly Questions</h1>
+      </div>
+    </header>
+
+    <main class="dashboard-main">
+      <!-- Progress Tracker -->
+      <div class="progress-container">
+        <div class="progress-header">
+          <div class="progress-title">Your Progress</div>
+          <div class="progress-stats">
+            <span id="completed-count">0</span>/<span id="total-count">{{ questions|length }}</span> Questions Answered
+          </div>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
+        </div>
+        
+        <!-- Question Navigation -->
+        <div class="question-navigation" id="question-navigation">
+          {% for i in range(questions|length) %}
+            <div class="question-nav-item {% if questions[i].id == target_question_id %}active{% endif %}" data-question="{{ i + 1 }}">{{ i + 1 }}</div>
+          {% endfor %}
+        </div>
+      </div>
+   
+      <form id="answerForm" action="{{ url_for('submit_answers', interview_id =target_question_id ) }}" method="post">
+        {% for question in questions %}
+            <div class="question-card {% if loop.index == target_question_id %}active{% endif %}" id="question-{{ loop.index }}">
+                <div class="question-header">
+                    <div class="question-title-section">
+                        <h2 class="question-title">
+                            <span class="question-number">{{ loop.index }}</span>
+                            {{ question }}
+                        </h2>
+                    </div>
+                </div>
+                <div class="question-content">
+                    <div class="form-group">
+                        <label for="answer_{{ loop.index }}">Your Answer:</label>
+                        <textarea 
+                            id="answer_{{ loop.index }}" 
+                            name="answer_{{ loop.index }}" 
+                            rows="8" 
+                            class="form-control answer-textarea" 
+                            placeholder="Type your answer here..."
+                            data-question-id="{{ loop.index }}"
+                        ></textarea>
+                    </div>
+                    <div class="question-actions">
+                        <button type="button" class="btn-outline save-draft-btn" data-question-id="{{ loop.index }}">
+                            <i class="fas fa-save"></i> Save as Draft
+                        </button>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        
+        <div class="form-actions">
+            <button type="button" class="btn-outline" id="cancelBtn">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+            <div class="form-actions-right">
+                <button type="button" class="btn-outline" id="saveAllDraftsBtn">
+                    <i class="fas fa-save"></i> Save All as Drafts
+                </button>
+                <button type="submit" class="btn-primary" id="submitBtn">
+                    <i class="fas fa-paper-plane"></i> Submit All Answers
+                </button>
+            </div>
+        </div>
+    </form>
+    
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const answerForm = document.getElementById('answerForm');
+      const submitBtn = document.getElementById('submitBtn');
+      const cancelBtn = document.getElementById('cancelBtn');
+      const saveAllDraftsBtn = document.getElementById('saveAllDraftsBtn');
+      const questionCards = document.querySelectorAll('.question-card');
+      const questionNavItems = document.querySelectorAll('.question-nav-item');
+      const answerTextareas = document.querySelectorAll('.answer-textarea');
+      const progressFill = document.getElementById('progress-fill');
+      const completedCount = document.getElementById('completed-count');
+      
+      // Navigation between questions
+      questionNavItems.forEach(item => {
+        item.addEventListener('click', function() {
+          const questionNumber = this.getAttribute('data-question');
+          
+          // Hide all question cards and remove active class from nav items
+          questionCards.forEach(card => card.classList.remove('active'));
+          questionNavItems.forEach(navItem => navItem.classList.remove('active'));
+          
+          // Show the selected question and mark nav item as active
+          document.getElementById(`question-${questionNumber}`).classList.add('active');
+          this.classList.add('active');
+        });
+      });
+      
+      // Update progress when typing in textareas
+      function updateProgress() {
+        let filledCount = 0;
+        answerTextareas.forEach(textarea => {
+          if (textarea.value.trim() !== '') {
+            filledCount++;
+            
+            // Mark the navigation item as completed
+            const questionNumber = Array.from(questionCards).findIndex(card => 
+              card.contains(textarea)) + 1;
+            questionNavItems[questionNumber - 1].classList.add('completed');
+          } else {
+            const questionNumber = Array.from(questionCards).findIndex(card => 
+              card.contains(textarea)) + 1;
+            questionNavItems[questionNumber - 1].classList.remove('completed');
+          }
+        });
+        
+        const progressPercentage = (filledCount / answerTextareas.length) * 100;
+        progressFill.style.width = `${progressPercentage}%`;
+        completedCount.textContent = filledCount;
+      }
+      
+      answerTextareas.forEach(textarea => {
+        textarea.addEventListener('input', updateProgress);
+      });
+      
+      // Save draft functionality
+      function saveDraft(questionId, text) {
+        localStorage.setItem(`draft_answer_${questionId}`, text);
+      }
+      
+      // Load drafts for all questions
+      function loadDrafts() {
+        answerTextareas.forEach(textarea => {
+          const questionId = textarea.getAttribute('data-question-id');
+          const draftText = localStorage.getItem(`draft_answer_${questionId}`);
+          
+          if (draftText) {
+            textarea.value = draftText;
+            
+            // Show notification
+            const formGroup = textarea.closest('.form-group');
+            if (!formGroup.querySelector('.draft-notice')) {
+              const draftNotice = document.createElement('div');
+              draftNotice.className = 'draft-notice';
+              draftNotice.innerHTML = '<i class="fas fa-info-circle"></i> A draft has been loaded. You can continue editing or submit your answer.';
+              formGroup.insertBefore(draftNotice, textarea);
+            }
+          }
+        });
+        
+        // Update progress after loading drafts
+        updateProgress();
+      }
+      
+      // Save draft buttons
+      document.querySelectorAll('.save-draft-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const questionId = this.getAttribute('data-question-id');
+          const textarea = document.querySelector(`#answer_${questionId}`);
+          
+          if (textarea.value.trim() !== '') {
+            saveDraft(questionId, textarea.value);
+            alert('Draft saved successfully!');
+          } else {
+            alert('Please enter some text before saving as draft.');
+          }
+        });
+      });
+      
+      // Save all drafts button
+      if (saveAllDraftsBtn) {
+        saveAllDraftsBtn.addEventListener('click', function() {
+          let savedCount = 0;
+          
+          answerTextareas.forEach(textarea => {
+            const questionId = textarea.getAttribute('data-question-id');
+            if (textarea.value.trim() !== '') {
+              saveDraft(questionId, textarea.value);
+              savedCount++;
+            }
+          });
+          
+          if (savedCount > 0) {
+            alert(`${savedCount} draft(s) saved successfully!`);
+          } else {
+            alert('Please enter some text before saving as draft.');
+          }
+        });
+      }
+      
+      // Cancel button
+      if (cancelBtn) {
+        cancelBtn.addEventListener('click', function() {
+          if (confirm('Are you sure you want to cancel? Any unsaved changes will be lost.')) {
+            window.location.href = document.querySelector('.back-button').getAttribute('href');
+          }
+        });
+      }
+      
+      // Submit form
+      if (submitBtn && answerForm) {
+        submitBtn.addEventListener('click', function() {
+          // Check if at least one question is answered
+          let hasAnswer = false;
+          answerTextareas.forEach(textarea => {
+            if (textarea.value.trim() !== '') {
+              hasAnswer = true;
+            }
+          });
+          
+          if (!hasAnswer) {
+            alert('Please answer at least one question before submitting.');
+            return;
+          }
+          
+          // Clear drafts on submission
+          answerTextareas.forEach(textarea => {
+            const questionId = textarea.getAttribute('data-question-id');
+            localStorage.removeItem(`draft_answer_${questionId}`);
+          });
+          
+          answerForm.submit();
+        });
+      }
+      
+      // Load drafts on page load
+      loadDrafts();
+    });
+  </script>
+</body>
+</html>

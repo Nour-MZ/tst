@@ -1,0 +1,277 @@
+{% extends "base_hr.html" %}
+
+{% block content %}
+    <!-- Main Content -->
+    <div class="main-content">
+        <header class="dashboard-header">
+          <button class="sidebar-toggle" id="sidebarToggle">
+            <i class="fas fa-bars"></i>
+          </button>
+          <h1 class="dashboard-title">HR Dashboard</h1>
+          <div class="header-actions">
+            <div class="notification-bell">
+              <i class="fas fa-bell"></i>
+              <span class="notification-badge">3</span>
+            </div>
+            <div class="user-profile">
+              <img src="https://via.placeholder.com/40" alt="HR Manager" class="user-avatar">
+              <span class="user-name">HR Manager</span>
+            </div>
+          </div>
+        </header>
+  
+        <main class="dashboard-main">
+          <!-- Overview Stats -->
+          <div class="dashboard-stats">
+            <div class="card stat-card">
+              <div class="card-header">
+                <h3 class="card-title">Total Employees</h3>
+              </div>
+              <div class="card-content">
+                <div class="stat-value">124</div>
+                <p class="stat-change">+4 from last month</p>
+              </div>
+            </div>
+  
+            <div class="card stat-card">
+              <div class="card-header">
+                <h3 class="card-title">Open Positions</h3>
+              </div>
+              <div class="card-content">
+                <div class="stat-value">8</div>
+                <p class="stat-change">+2 since last week</p>
+              </div>
+            </div>
+  
+            <div class="card stat-card">
+              <div class="card-header">
+                <h3 class="card-title">Pending Leave Requests</h3>
+              </div>
+              <div class="card-content">
+                <div class="stat-value">12</div>
+                <p class="stat-change">+3 new requests</p>
+              </div>
+            </div>
+  
+            <div class="card stat-card">
+              <div class="card-header">
+                <h3 class="card-title">Turnover Rate</h3>
+              </div>
+              <div class="card-content">
+                <div class="stat-value">3.2%</div>
+                <p class="stat-change">-0.5% from last quarter</p>
+              </div>
+            </div>
+          </div>
+  
+          <!-- Department Distribution -->
+          <div class="dashboard-row">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Department Distribution</h3>
+              </div>
+              <div class="card-content">
+                <div class="chart-container">
+                  <canvas id="departmentChart"></canvas>
+                </div>
+              </div>
+            </div>
+  
+            <!-- Recent Activities -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Recent Activities</h3>
+              </div>
+              <div class="card-content">
+                <ul class="activity-list">
+                  <li class="activity-item">
+                    <div class="activity-icon bg-blue">
+                      <i class="fas fa-user-plus"></i>
+                    </div>
+                    <div class="activity-content">
+                      <div class="activity-title">New Employee Onboarded</div>
+                      <div class="activity-desc">Sarah Johnson joined as UX Designer</div>
+                      <div class="activity-time">2 hours ago</div>
+                    </div>
+                  </li>
+                  <li class="activity-item">
+                    <div class="activity-icon bg-green">
+                      <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="activity-content">
+                      <div class="activity-title">Leave Request Approved</div>
+                      <div class="activity-desc">Michael Brown's vacation request approved</div>
+                      <div class="activity-time">Yesterday</div>
+                    </div>
+                  </li>
+                  <li class="activity-item">
+                    <div class="activity-icon bg-orange">
+                      <i class="fas fa-briefcase"></i>
+                    </div>
+                    <div class="activity-content">
+                      <div class="activity-title">New Position Opened</div>
+                      <div class="activity-desc">Senior Backend Developer position created</div>
+                      <div class="activity-time">2 days ago</div>
+                    </div>
+                  </li>
+                  <li class="activity-item">
+                    <div class="activity-icon bg-red">
+                      <i class="fas fa-user-times"></i>
+                    </div>
+                    <div class="activity-content">
+                      <div class="activity-title">Employee Resignation</div>
+                      <div class="activity-desc">David Wilson submitted resignation</div>
+                      <div class="activity-time">3 days ago</div>
+                    </div>
+                  </li>
+                  <li class="activity-item">
+                    <div class="activity-icon bg-purple">
+                      <i class="fas fa-award"></i>
+                    </div>
+                    <div class="activity-content">
+                      <div class="activity-title">Performance Review Completed</div>
+                      <div class="activity-desc">Q2 reviews completed for Engineering team</div>
+                      <div class="activity-time">1 week ago</div>
+                    </div>
+                  </li>
+                </ul>
+                <div class="view-all-container">
+                  <a href="#" class="btn btn-outline">View All Activities</a>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+          <!-- Upcoming Events and Pending Tasks -->
+          <div class="dashboard-row">
+            <!-- Upcoming Events -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Upcoming Events</h3>
+              </div>
+              <div class="card-content">
+                <ul class="event-list">
+                  <li class="event-item">
+                    <div class="event-date">
+                      <div class="event-month">JUN</div>
+                      <div class="event-day">15</div>
+                    </div>
+                    <div class="event-content">
+                      <div class="event-title">Team Building Workshop</div>
+                      <div class="event-time"><i class="fas fa-clock"></i> 10:00 AM - 4:00 PM</div>
+                      <div class="event-location"><i class="fas fa-map-marker-alt"></i> Conference Room A</div>
+                    </div>
+                  </li>
+                  <li class="event-item">
+                    <div class="event-date">
+                      <div class="event-month">JUN</div>
+                      <div class="event-day">22</div>
+                    </div>
+                    <div class="event-content">
+                      <div class="event-title">New Employee Orientation</div>
+                      <div class="event-time"><i class="fas fa-clock"></i> 9:00 AM - 12:00 PM</div>
+                      <div class="event-location"><i class="fas fa-map-marker-alt"></i> Training Room</div>
+                    </div>
+                  </li>
+                  <li class="event-item">
+                    <div class="event-date">
+                      <div class="event-month">JUL</div>
+                      <div class="event-day">05</div>
+                    </div>
+                    <div class="event-content">
+                      <div class="event-title">Quarterly Review Meeting</div>
+                      <div class="event-time"><i class="fas fa-clock"></i> 2:00 PM - 4:00 PM</div>
+                      <div class="event-location"><i class="fas fa-map-marker-alt"></i> Board Room</div>
+                    </div>
+                  </li>
+                </ul>
+                <div class="view-all-container">
+                  <a href="#" class="btn btn-outline">View Calendar</a>
+                </div>
+              </div>
+            </div>
+  
+            <!-- Pending Tasks -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Pending Tasks</h3>
+              </div>
+              <div class="card-content">
+                <ul class="task-list">
+                  <li class="task-item">
+                    <div class="task-checkbox">
+                      <input type="checkbox" id="task1" class="task-check">
+                      <label for="task1"></label>
+                    </div>
+                    <div class="task-content">
+                      <div class="task-title">Review leave requests</div>
+                      <div class="task-meta">
+                        <span class="task-priority high">High</span>
+                        <span class="task-due">Due Today</span>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="task-item">
+                    <div class="task-checkbox">
+                      <input type="checkbox" id="task2" class="task-check">
+                      <label for="task2"></label>
+                    </div>
+                    <div class="task-content">
+                      <div class="task-title">Schedule interviews for Developer position</div>
+                      <div class="task-meta">
+                        <span class="task-priority medium">Medium</span>
+                        <span class="task-due">Due Tomorrow</span>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="task-item">
+                    <div class="task-checkbox">
+                      <input type="checkbox" id="task3" class="task-check">
+                      <label for="task3"></label>
+                    </div>
+                    <div class="task-content">
+                      <div class="task-title">Prepare monthly payroll report</div>
+                      <div class="task-meta">
+                        <span class="task-priority high">High</span>
+                        <span class="task-due">Due in 2 days</span>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="task-item">
+                    <div class="task-checkbox">
+                      <input type="checkbox" id="task4" class="task-check">
+                      <label for="task4"></label>
+                    </div>
+                    <div class="task-content">
+                      <div class="task-title">Update employee handbook</div>
+                      <div class="task-meta">
+                        <span class="task-priority low">Low</span>
+                        <span class="task-due">Due in 5 days</span>
+                      </div>
+                    </div>
+                  </li>
+                  <li class="task-item">
+                    <div class="task-checkbox">
+                      <input type="checkbox" id="task5" class="task-check">
+                      <label for="task5"></label>
+                    </div>
+                    <div class="task-content">
+                      <div class="task-title">Finalize training schedule for Q3</div>
+                      <div class="task-meta">
+                        <span class="task-priority medium">Medium</span>
+                        <span class="task-due">Due in 1 week</span>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+                <div class="add-task">
+                  <input type="text" class="form-input" placeholder="Add new task...">
+                  <button class="btn btn-primary"><i class="fas fa-plus"></i></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+
+    {% endblock %}

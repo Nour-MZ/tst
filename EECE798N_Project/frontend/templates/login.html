@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Responsive Login Form HTML CSS | CodingNepal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/style_login.css') }}" />
+   
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body>
+    <div class="login-container">
+      <img src="../static/assets/img/desk_with_laptops_image_.png" class="login-image" alt="">
+    <div class="container">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+      <form method="POST">
+        <div class="title">Login</div>
+        <div class="input-box underline">
+          <input type="text" name="email" placeholder="Enter Your Email" required />
+          <div class="underline"></div>
+        </div>
+        <div class="input-box">
+          <input type="password" name="password" placeholder="Enter Your Password" required />
+          <div class="underline"></div>
+        </div>
+        <div class="input-box user-type">
+          <span class="details">Registering as:</span>
+          <select name="user_type" required>
+              <option value="">-- Select Type --</option>
+              <option value="applicant">Applicant</option>
+              <option value="company">Company</option>
+          </select>
+          <div class="underline"></div>
+      </div>
+        <div class="input-box button">
+          <input type="submit" value="Continue" />
+        </div>
+      </form>
+    </div>
+  </body>
+</html>

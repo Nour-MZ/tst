@@ -1,0 +1,138 @@
+{% extends "base_hr.html" %}
+
+{% block content %}
+  <div class="main-content">
+    <header class="dashboard-header">
+      <div class="header-left">
+        <button class="sidebar-toggle" id="sidebarToggle">
+          <i class="fas fa-bars"></i>
+        </button>
+        <h1 class="dashboard-title">Daily Questions</h1>
+      </div>
+      <div class="header-actions">
+        <button class="btn-outline" id="todayBtn">
+          <i class="fas fa-calendar-day"></i> Today
+        </button>
+      </div>
+    </header>
+
+    <main class="dashboard-main">
+      <!-- Date Selection with Calendar -->
+      <div class="date-selection">
+        <div class="date-selector">
+          <button class="btn-icon" id="prevDayBtn">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          
+          <div class="date-calendar">
+            <div class="calendar-input-wrapper">
+              <input type="date" id="datePicker" class="calendar-input" value="{{ selected_date }}">
+              <div class="calendar-display">{{ selected_date_display }}</div>
+            </div>
+          </div>
+          
+          <button class="btn-icon" id="nextDayBtn">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+        
+        <div class="day-progress">
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: {{ progress_percent }}%;"></div>
+          </div>
+          <span class="progress-text">{{ answered_questions }} of {{ total_questions }} questions answered</span>
+        </div>
+      </div>
+
+      <!-- Questions Container -->
+      <div class="questions-container">
+        <div class="section-header">
+          <h2>Questions for {{ selected_date_display }}</h2>
+          <div class="questions-count">
+            {{ total_questions }} question{% if total_questions != 1 %}s{% endif %}
+          </div>
+        </div>
+
+        <div class="question-list">
+          {% if questions %}
+            {% for question in questions %}
+            <div class="question-card {% if question.status %}answered{% else %}unanswered{% endif %}">
+              <div class="question-header">
+                <h3 class="question-title">{{ question.job_title }}</h3>
+                <div class="question-badges">
+                  <span class="question-badge {% if question.status %}answered{% else %}unanswered{% endif %}">
+                    {% if question.status %}Answered{% else %}Unanswered{% endif %}
+                  </span>
+                </div>
+              </div>
+              <div class="question-content">
+                <p class="applicant-name">Applicant: {{ question.applicant_name }}</p>
+                <div class="question-list-items">
+                  {% if question.questions is mapping %}
+                    {% for category, q_list in question.questions.items() %}
+                      <div class="question-category">
+                        <h4>{{ category|capitalize }}</h4>
+                        <ul>
+                          {% for q in q_list %}
+                            <li>{{ q }}</li>
+                          {% endfor %}
+                        </ul>
+                      </div>
+                    {% endfor %}
+                  {% else %}
+                    <ul>
+                      {% for q in question.questions %}
+                        <li>{{ q }}</li>
+                      {% endfor %}
+                    </ul>
+                  {% endif %}
+                </div>
+                
+              </div>
+              <div class="question-footer">
+                <div class="question-meta">
+                  <div class="question-meta-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>{{ question.interview_date }}</span>
+                  </div>
+                  <div class="question-meta-item">
+                    <i class="fas fa-clock"></i>
+                    <span>{{ question.interview_time }}</span>
+                  </div>
+                  <div class="question-meta-item">
+                    <i class="fas fa-calendar-day"></i>
+                    <span>{{ question.day_of_week }}</span>
+                  </div>
+                </div>
+                <div class="question-actions">
+                  {% if question.status %}
+                  <a href="{{ url_for('view_answer', question_id=question.id) }}" class="btn-outline">
+                    <i class="fas fa-eye"></i> View Answer
+                  </a>
+                  {% else %}
+                  <a href="{{ url_for('answer_question', question_id=question.id) }}" class="btn-primary">
+                    <i class="fas fa-pen"></i> Answer Question
+                  </a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          {% else %}
+            <div class="question-card no-questions">
+              <div class="question-content empty-state">
+                <div class="empty-icon">
+                  <i class="fas fa-clipboard-list"></i>
+                </div>
+                <h3>No Questions for {{ day_of_week }}</h3>
+                <p>There are no interviews scheduled for {{ selected_date_display }}.</p>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
+{% endblock %}

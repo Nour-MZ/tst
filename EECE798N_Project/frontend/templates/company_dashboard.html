@@ -1,0 +1,182 @@
+
+{% extends "base_company.html" %}
+
+{% block content %}
+<!-- Main Content -->
+<div class="main-content">
+  <header class="dashboard-header">
+    <button class="sidebar-toggle" id="sidebarToggle">
+      <i class="fas fa-bars"></i>
+    </button>
+    <h1 class="dashboard-title">Company Dashboard</h1>
+  </header>
+
+  <main class="dashboard-main">
+    <div class="dashboard-stats">
+      <div class="card stat-card">
+        <div class="card-header">
+          <h3 class="card-title">Total Offere Jobs</h3>
+        </div>
+        <div class="card-content">
+          <div class="stat-value">{{ stats.total_jobs }}</div>
+        </div>
+      </div>
+
+      <div class="card stat-card">
+        <div class="card-header">
+          <h3 class="card-title">Active Offeres</h3>
+        </div>
+        <div class="card-content">
+          <div class="stat-value">{{ stats.open_jobs }}</div>
+        </div>
+      </div>
+
+      <div class="card stat-card">
+        <div class="card-header">
+          <h3 class="card-title">Inactive Offeres</h3>
+        </div>
+        <div class="card-content">
+          <div class="stat-value">{{ stats.closed_jobs }}</div>
+        </div>
+      </div>
+      <div class="card stat-card">
+        <div class="card-header">
+          <h3 class="card-title">Total Apllicant Applied</h3>
+        </div>
+        <div class="card-content">
+          <div class="stat-value">{{ stats.total_applicants }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Job Postings -->
+    <div class="card">
+      <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+        <h3 class="card-title">Your Recent Job Postings</h3>
+        <div class="search-container">
+          <input type="text" id="jobSearch" placeholder="Search jobs..." class="search-input">
+          <i class="fas fa-search search-icon"></i>
+        </div>
+      </div>
+      <div class="card-content">
+        <div class="job-listings">
+          {% for job in jobs[:3] %}  {# Show only first 3 jobs by default #}
+          <div class="job-card searchable-job" data-title="{{ job.job_title|lower }}" data-level="{{ job.job_level|lower }}" data-date="{{ job.date_offering|format_date|lower }}">
+            <div class="job-header">
+              <div class="job-title-container">
+                <h3 class="job-title">{{ job.job_title }}</h3>
+                <p class="job-company">Posted on {{ job.date_offering|format_date }}</p>
+              </div>
+              <span class="job-category {{ job.job_level|replace(' ', '') }}">{{ job.job_level }}</span>
+            </div>
+            <div class="job-details">
+              <span class="job-detail"><i class="fas fa-layer-group"></i> {{ job.job_level }}</span>
+              <span class="job-detail"><i class="fas fa-clock"></i> {{ job.years_experience }} years experience</span>
+            </div>
+            <div class="job-actions">
+              <a href="{{ url_for('job_applicants', job_id=job.id) }}" class="btn btn-outline">View Applicants</a>
+            </div>
+          </div>
+          {% else %}
+          <div class="no-jobs">
+            <p>You haven't posted any jobs yet.</p>
+            <a href="{{ url_for('post_job') }}" class="btn btn-primary">Post Your First Job</a>
+          </div>
+          {% endfor %}
+          
+          {# Hidden jobs that will be shown when "View All" is clicked #}
+          <div id="additionalJobs" style="display: none;">
+            {% for job in jobs[3:] %}
+            <div class="job-card searchable-job" data-title="{{ job.job_title|lower }}" data-level="{{ job.job_level|lower }}" data-date="{{ job.date_offering|format_date|lower }}">
+              <div class="job-header">
+                <div class="job-title-container">
+                  <h3 class="job-title">{{ job.job_title }}</h3>
+                  <p class="job-company">Posted on {{ job.date_offering|format_date }}</p>
+                </div>
+                <span class="job-category {{ job.job_level|replace(' ', '') }}">{{ job.job_level }}</span>
+              </div>
+              <div class="job-details">
+                <span class="job-detail"><i class="fas fa-layer-group"></i> {{ job.job_level }}</span>
+                <span class="job-detail"><i class="fas fa-clock"></i> {{ job.years_experience }} years experience</span>
+              </div>
+              <div class="job-actions">
+                <a href="{{ url_for('job_applicants', job_id=job.id) }}" class="btn btn-outline">View Applicants</a>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        {% if jobs|length > 3 %}
+        <div class="view-all-container">
+          <button id="viewAllBtn" class="btn btn-primary">View All Jobs</button>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // View All/Show Less toggle functionality
+    const viewAllBtn = document.getElementById('viewAllBtn');
+    if (viewAllBtn) {
+      viewAllBtn.addEventListener('click', function() {
+        const additionalJobs = document.getElementById('additionalJobs');
+        if (additionalJobs.style.display === 'none') {
+          additionalJobs.style.display = 'block';
+          viewAllBtn.textContent = 'Show Less';
+        } else {
+          additionalJobs.style.display = 'none';
+          viewAllBtn.textContent = 'View All Jobs';
+        }
+      });
+    }
+
+    // Search functionality
+    const searchInput = document.getElementById('jobSearch');
+    if (searchInput) {
+      searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        const jobCards = document.querySelectorAll('.searchable-job');
+        
+        jobCards.forEach(card => {
+          const title = card.getAttribute('data-title');
+          const level = card.getAttribute('data-level');
+          const date = card.getAttribute('data-date');
+          
+          if (title.includes(searchTerm) || level.includes(searchTerm) || date.includes(searchTerm)) {
+            card.style.display = 'block';
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      });
+    }
+  });
+</script>
+
+<style>
+  .search-container {
+    position: relative;
+    width: 250px;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 8px 30px 8px 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+  }
+  
+  .search-icon {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
+  }
+</style>
+{% endblock %}

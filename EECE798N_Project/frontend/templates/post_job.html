@@ -1,0 +1,125 @@
+{% extends "base_company.html" %}
+
+{% block content %}
+<div class="main-content">
+  <header class="dashboard-header">
+    <h1 class="dashboard-title">Post New Job</h1>
+  </header>
+
+  <main class="dashboard-main">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Job Details</h3>
+      </div>
+      <div class="card-content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }}">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('post_job') }}">
+          <div class="form-group">
+            <label for="jobTitle" class="form-label">Job Title *</label>
+            <input type="text" id="jobTitle" name="jobTitle" class="form-input" required>
+          </div>
+
+
+          <div class="form-group">
+            <label for="jobLevel" class="form-label">Job Level *</label>
+            <select id="jobLevel" name="jobLevel" class="form-input" required>
+              <option value="Entry Level">Entry Level</option>
+              <option value="Junior">Junior</option>
+              <option value="Mid Level">Mid Level</option>
+              <option value="Senior">Senior</option>
+              <option value="Lead">Lead</option>
+              <option value="Manager">Manager</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="yearsExperience" class="form-label">Years of Experience *</label>
+            <select id="yearsExperience" name="yearsExperience" class="form-input" required>
+              <option value="0-2 years">0-2 years</option>
+              <option value="2-5 years">2-5 years</option>
+              <option value="5-10 years">5-10 years</option>
+              <option value="10+ years">10+ years</option>
+            
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="jobDescription" class="form-label">Additional Information*</label>
+            <textarea id="jobDescription" name="jobDescription" class="form-input" rows="5" required></textarea>
+          </div>
+
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Post Job</button>
+            <a href="{{ url_for('company_dashboard') }}" class="btn btn-outline">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+// Add dynamic fields for responsibilities and requirements
+document.addEventListener('DOMContentLoaded', function() {
+  // Responsibilities
+  document.getElementById('add-responsibility').addEventListener('click', function() {
+    const container = document.getElementById('responsibilities-container');
+    const div = document.createElement('div');
+    div.className = 'responsibility-input';
+    div.innerHTML = `
+      <input type="text" name="responsibilities" class="form-input" required>
+      <button type="button" class="btn btn-sm btn-outline remove-responsibility">Remove</button>
+    `;
+    container.appendChild(div);
+  });
+
+  // Requirements
+  document.getElementById('add-requirement').addEventListener('click', function() {
+    const container = document.getElementById('requirements-container');
+    const div = document.createElement('div');
+    div.className = 'requirement-input';
+    div.innerHTML = `
+      <input type="text" name="requirements" class="form-input" required>
+      <button type="button" class="btn btn-sm btn-outline remove-requirement">Remove</button>
+    `;
+    container.appendChild(div);
+  });
+
+  // Event delegation for remove buttons
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('remove-responsibility')) {
+      e.target.parentElement.remove();
+    }
+    if (e.target.classList.contains('remove-requirement')) {
+      e.target.parentElement.remove();
+    }
+  });
+});
+</script>
+
+<style>
+.responsibility-input, .requirement-input {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.responsibility-input input, .requirement-input input {
+  flex-grow: 1;
+}
+
+.remove-responsibility, .remove-requirement {
+  white-space: nowrap;
+}
+</style>
+{% endblock %}

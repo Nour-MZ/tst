@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>JobMatch - HR-Managed Job Portal</title>
+  <meta name="description" content="JobMatch connects job seekers with employers through an AI-powered platform">
+  <meta name="keywords" content="job portal, employment, hiring, career, job search">
+
+  <!-- Vendor CSS Files -->
+  <link href="{{ url_for('static', filename='assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+
+
+  <!-- Main CSS File -->
+  <link href="{{ url_for('static', filename='assets/css/main.css') }}" rel="stylesheet">
+</head>
+
+<body class="index-page">
+
+  <header id="header" class="header d-flex align-items-center sticky-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center">
+
+      <a href="{{ url_for('index') }}" class="logo d-flex align-items-center me-auto">
+        <h1 class="sitename">Hirevo</h1>
+      </a>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="#hero" class="active">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#features">Features</a></li>
+          <li><a href="#team">Team</a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+
+      <div class="auth-buttons">
+        <a href="{{ url_for('login') }}" class="btn-getstarted">Login</a>
+        <a href="{{ url_for('signup') }}" class="btn-getstarted">Sign Up</a>
+      </div>
+
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero section">
+      <div class="container">
+        <div class="row gy-4">
+          <div class="col-lg-6 order-2 order-lg-1 gap-4 d-flex flex-column justify-content-center">
+            <h1>Find Your Dream Job with JobMatch</h1>
+            <p>Connecting talented professionals with top employers through AI-powered matching</p>
+            <div class="d-flex">
+              <a href="{{ url_for('signup') }}" class="btn-get-started">Get Started</a>
+              <a href="https://www.youtube.com/watch?v=Y7f98aduVJ8" class="glightbox btn-watch-video d-flex align-items-center"></a>
+            </div>
+          </div>
+          <div class="col-lg-6 order-1 order-lg-2 hero-img">
+            <img src="{{ url_for('static', filename='assets/img/hero-img.png') }}" class="img-fluid animated" alt="Job seekers and employers connecting">
+          </div>
+        </div>
+      </div>
+    </section>
+
+ 
+    <!-- About Section -->
+    <section id="about" class="about section">
+
+        <!-- Section Title -->
+        <div class="container section-title" data-aos="fade-up">
+          <h2>About Us</h2>
+          <p>Revolutionizing the way companies and job seekers connect</p>
+        </div><!-- End Section Title -->
+  
+        <div class="container">
+  
+          <div class="row gy-5">
+  
+            <div class="content col-xl-5 d-flex flex-column" data-aos="fade-up" data-aos-delay="100">
+              <h3>HR-Managed Job Portal Dashboard</h3>
+              <p>
+                JobMatch provides a comprehensive dashboard for HR professionals to manage job postings, applications, and candidate matching all in one place. Our platform uses advanced algorithms to connect the right candidates with the right opportunities.
+              </p>
+              <!-- url 'signup' -->
+              <a href="" class="about-btn align-self-center align-self-xl-start"><span>Join Now</span> <i class="bi bi-chevron-right"></i></a>
+            </div>
+  
+            <div class="col-xl-7" data-aos="fade-up" data-aos-delay="200">
+              <div class="row gy-4">
+  
+                <div class="col-md-6 icon-box position-relative">
+                  <i class="bi bi-people"></i>
+                  <h4><a href="" class="stretched-link">Talent Pool</a></h4>
+                  <p>Access to a vast network of qualified professionals across various industries</p>
+                </div><!-- Icon-Box -->
+  
+                <div class="col-md-6 icon-box position-relative">
+                  <i class="bi bi-search"></i>
+                  <h4><a href="" class="stretched-link">Smart Matching</a></h4>
+                  <p>AI-powered algorithms that match candidates to jobs based on skills and culture fit</p>
+                </div><!-- Icon-Box -->
+  
+                <div class="col-md-6 icon-box position-relative">
+                  <i class="bi bi-graph-up"></i>
+                  <h4><a href="" class="stretched-link">Analytics</a></h4>
+                  <p>Comprehensive analytics to track hiring metrics and optimize your recruitment process</p>
+                </div><!-- Icon-Box -->
+  
+                <div class="col-md-6 icon-box position-relative">
+                  <i class="bi bi-chat-square-text"></i>
+                  <h4><a href="" class="stretched-link">Communication Tools</a></h4>
+                  <p>Built-in messaging and interview scheduling to streamline the hiring process</p>
+                </div><!-- Icon-Box -->
+  
+              </div>
+            </div>
+  
+          </div>
+  
+        </div>
+  
+      </section><!-- /About Section -->
+  
+  
+  
+      <!-- Services Section -->
+      <section id="services" class="services section">
+  
+        <!-- Section Title -->
+        <div class="container section-title" data-aos="fade-up">
+          <h2>Services</h2>
+          <p>Comprehensive solutions for job seekers and employers</p>
+        </div><!-- End Section Title -->
+  
+        <div class="container">
+  
+          <div class="row gy-4">
+  
+            <div class="col-xl-3 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="100">
+              <div class="service-item position-relative">
+                <i class="bi bi-search-heart"></i>
+                <h4><a href="" class="stretched-link">Job Seeking</a></h4>
+                <p>Advanced job search with personalized recommendations based on your profile</p>
+              </div>
+            </div><!-- End Service Item -->
+  
+            <div class="col-xl-3 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="200">
+              <div class="service-item position-relative">
+                <i class="bi bi-briefcase"></i>
+                <h4><a href="" class="stretched-link">Job Offering</a></h4>
+                <p>Post jobs and manage applications through our intuitive HR dashboard</p>
+              </div>
+            </div><!-- End Service Item -->
+  
+            <div class="col-xl-3 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="300">
+              <div class="service-item position-relative">
+                <i class="bi bi-file-earmark-text"></i>
+                <h4><a href="" class="stretched-link">Job Description</a></h4>
+                <p>AI-assisted job description writing to attract the right candidates</p>
+              </div>
+            </div><!-- End Service Item -->
+  
+            <div class="col-xl-3 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="400">
+              <div class="service-item position-relative">
+                <i class="bi bi-people"></i>
+                <h4><a href="" class="stretched-link">Smart Matching</a></h4>
+                <p>Our algorithm matches candidates to jobs based on skills and culture fit</p>
+              </div>
+            </div><!-- End Service Item -->
+  
+            <div class="col-xl-3 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="500">
+              <div class="service-item position-relative">
+                <i class="bi bi-camera-video"></i>
+                <h4><a href="" class="stretched-link">AI Interviews</a></h4>
+                <p>Conduct preliminary interviews with our AI-powered interview system</p>
+              </div>
+            </div><!-- End Service Item -->
+  
+            <div class="col-xl-3 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="600">
+              <div class="service-item position-relative">
+                <i class="bi bi-graph-up"></i>
+                <h4><a href="" class="stretched-link">Analytics</a></h4>
+                <p>Track application metrics and hiring pipeline performance</p>
+              </div>
+            </div><!-- End Service Item -->
+  
+            <div class="col-xl-3 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="700">
+              <div class="service-item position-relative">
+                <i class="bi bi-chat-square-text"></i>
+                <h4><a href="" class="stretched-link">Communication</a></h4>
+                <p>Built-in messaging system for seamless candidate communication</p>
+              </div>
+            </div><!-- End Service Item -->
+  
+            <div class="col-xl-3 col-md-6 d-flex" data-aos="fade-up" data-aos-delay="800">
+              <div class="service-item position-relative">
+                <i class="bi bi-shield-check"></i>
+                <h4><a href="" class="stretched-link">Verification</a></h4>
+                <p>Candidate verification services to ensure credential authenticity</p>
+              </div>
+            </div><!-- End Service Item -->
+  
+          </div>
+  
+        </div>
+  
+      </section><!-- /Services Section -->
+  
+      <!-- Features Section -->
+      <section id="features" class="features section">
+  
+        <!-- Section Title -->
+        <div class="container section-title" data-aos="fade-up">
+          <h2>Features</h2>
+          <p>Powerful tools to streamline your job search or hiring process</p>
+        </div><!-- End Section Title -->
+  
+        <div class="container">
+  
+          <div class="row gy-4">
+  
+            <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="100">
+              <div class="features-item">
+                <i class="bi bi-person-vcard" style="color: #ffbb2c;"></i>
+                <h3><a href="" class="stretched-link">Profile Builder</a></h3>
+              </div>
+            </div><!-- End Feature Item -->
+  
+            <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="200">
+              <div class="features-item">
+                <i class="bi bi-search-heart" style="color: #5578ff;"></i>
+                <h3><a href="" class="stretched-link">Smart Search</a></h3>
+              </div>
+            </div><!-- End Feature Item -->
+  
+            <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="300">
+              <div class="features-item">
+                <i class="bi bi-robot" style="color: #e80368;"></i>
+                <h3><a href="" class="stretched-link">AI Matching</a></h3>
+              </div>
+            </div><!-- End Feature Item -->
+  
+            <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="400">
+              <div class="features-item">
+                <i class="bi bi-bell" style="color: #e361ff;"></i>
+                <h3><a href="" class="stretched-link">Job Alerts</a></h3>
+              </div>
+            </div><!-- End Feature Item -->
+  
+            <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="500">
+              <div class="features-item">
+                <i class="bi bi-file-earmark-text" style="color: #47aeff;"></i>
+                <h3><a href="" class="stretched-link">Resume Builder</a></h3>
+              </div>
+            </div><!-- End Feature Item -->
+  
+            <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="600">
+              <div class="features-item">
+                <i class="bi bi-camera-video" style="color: #ffa76e;"></i>
+                <h3><a href="" class="stretched-link">Video Interviews</a></h3>
+              </div>
+            </div><!-- End Feature Item -->
+  
+            <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="700">
+              <div class="features-item">
+                <i class="bi bi-graph-up" style="color: #11dbcf;"></i>
+                <h3><a href="" class="stretched-link">Analytics Dashboard</a></h3>
+              </div>
+            </div><!-- End Feature Item -->
+  
+            <div class="col-lg-3 col-md-4" data-aos="fade-up" data-aos-delay="800">
+              <div class="features-item">
+                <i class="bi bi-chat-square-text" style="color: #4233ff;"></i>
+                <h3><a href="" class="stretched-link">Messaging System</a></h3>
+              </div>
+            </div><!-- End Feature Item -->
+  
+          </div>
+  
+        </div>
+  
+      </section><!-- /Features Section -->
+  
+
+  </main>
+
+  <footer id="footer" class="footer">
+    <div class="container">
+      <div class="copyright text-center">
+        <p>© <span>Copyright</span> <strong class="px-1 sitename">JobMatch</strong> <span>All Rights Reserved</span></p>
+      </div>
+    </div>
+  </footer>
+
+  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+  <div id="preloader">
+ 
+  </div>
+
+  <!-- Main JS File -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+  <!-- GSAP ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
+  <script src="{{ url_for('static', filename='assets/js/main.js') }}"></script>
+</body>
+
+</html>

@@ -1,0 +1,142 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  db:
+    image: mysql:8.0
+    container_name: mysql-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: eece798
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - eece-network
+
+  # Backend Service (Flask)
+  backend:
+    build: ./backend
+    container_name: flask-backend
+    depends_on:
+      - db
+    ports:
+      - "5000:5000"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_NAME=eece798
+      - DB_USER=root
+      - DB_PASSWORD=password
+    networks:
+      - eece-network
+
+  # Frontend Service (Highcharts Visualization)
+  frontend:
+    build: ./frontend
+    container_name: flask-frontend
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+    environment:
+      - CV_EXTRACTION_URL=http://cv-extraction-api:3001
+      - JOB_DESCRIPTION_URL=http://job-description-api:3002
+      - CV_JOB_MATCHING_URL=http://cv-job-matching-api:3003
+      - INTERVIEW_QUESTIONS_URL= http://interview-questions-api:3004
+    networks:
+      - eece-network
+
+  # CV Extraction API
+  cv-extraction-api:
+    stdin_open: true
+    tty: true
+    build:
+      context: ./CV-Format
+      dockerfile: Dockerfile
+    command: python cv_format.py
+    ports:
+      - "3001:3001"
+    networks:
+      - eece-network
+    environment:
+      - PORT=3001
+
+  # Job Description API
+  job-description-api:
+    stdin_open: true
+    tty: true
+    build:
+      context: ./job-description
+      dockerfile: Dockerfile
+    command: python job.py
+    ports:
+      - "3002:3002"
+    networks:
+      - eece-network
+    environment:
+      - PORT=3002
+
+  # CV Job Matching API
+  cv-job-matching-api:
+    stdin_open: true
+    tty: true
+    build:
+      context: ./cv-job-matching 
+      dockerfile: Dockerfile
+    command: python cv_job.py
+    ports:
+      - "3003:3003"
+    networks:
+      - eece-network
+    environment:
+      - PORT=3003
+
+  # Interview Questions API
+  interview-questions-api:
+    stdin_open: true
+    tty: true
+    build:
+      context: ./Interview-Questions
+      dockerfile: Dockerfile
+    command: python interview.py
+    ports:
+      - "3004:3004"
+    networks:
+      - eece-network
+    environment:
+      - PORT=3004
+  # Prometheus for monitoring
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - eece-network
+  
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3008:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    networks:
+      - eece-network
+
+
+
+networks:
+  eece-network:
+    driver: bridge
+
+volumes:
+  grafana-storage: {}

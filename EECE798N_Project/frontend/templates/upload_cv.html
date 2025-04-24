@@ -1,0 +1,65 @@
+{% extends "base_jobseeker.html" %}
+
+{% block content %}
+<div class="main-content">
+  <header class="dashboard-header">
+    <button class="sidebar-toggle" id="sidebarToggle">
+      <i class="fas fa-bars"></i>
+    </button>
+    <h1 class="dashboard-title">Upload Your CV</h1>
+  </header>
+
+  <main class="dashboard-main">
+    <div class="dashboard-card">
+      <div class="card-header">
+        <h3 class="card-title">PDF CV Upload</h3>
+      </div>
+      <div class="card-content">
+        <!-- Alert container - changed classes for better visibility -->
+        <div id="pdfAlert" class="alert hidden" role="alert"></div>
+
+
+        {% if has_cv %}
+        <div class="alert alert-info" role="alert">
+          <i class="fas fa-check-circle"></i> You have already uploaded a CV. 
+        </div>
+        {% endif %}
+
+        <!-- Form - added proper enctype and action -->
+        <form id="pdfForm" class="pdf-form" method="POST" enctype="multipart/form-data" action="{{ url_for('upload_cv') }}">
+          <div class="form-group">
+            <label for="pdfFile" class="form-label">Select PDF File</label>
+            <div class="file-upload-container">
+              <!-- File input - added aria-describedby for accessibility -->
+              <input type="file" id="pdfFile" name="pdfFile" accept=".pdf" class="form-input" 
+                     aria-describedby="fileHelp">
+              <small id="fileHelp" class="form-text text-muted">
+                Maximum file size: 2MB. Only PDF files accepted.
+              </small>
+              <button type="submit" class="btn btn-primary upload-btn" {% if has_cv|default(False) %}disabled{% endif %}>
+                <i class="fas fa-upload"></i> Upload CV
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <!-- File info display - added more semantic markup -->
+        <div id="fileInfo" class="file-info mt-3 hidden">
+          <strong>Selected File:</strong> 
+          <span id="fileName" class="file-name"></span> 
+          <span id="fileSize" class="file-size"></span>
+        </div>
+
+        <!-- Optional: Add a loading indicator (alternative to button spinner) -->
+        <div id="loadingIndicator" class="loading-indicator hidden">
+          <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+          <span class="loading-text">Processing your CV...</span>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+{% endblock %}

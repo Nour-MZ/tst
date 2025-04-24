@@ -1,0 +1,98 @@
+{% extends "base_company.html" %}
+
+{% block content %}
+<div class="main-content">
+  <header class="dashboard-header">
+    <button class="sidebar-toggle" id="sidebarToggle">
+      <i class="fas fa-bars"></i>
+    </button>
+    <h1 class="dashboard-title">Applicants for {{ job.title }}</h1>
+  </header>
+
+  <main class="dashboard-main">
+    <!-- Job Summary -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Job Details</h3>
+      </div>
+      <div class="card-content">
+        <div class="job-details">
+          <p><strong>Level:</strong> {{ job.job_level }}</p>
+          <p><strong>Experience Required:</strong> {{ job.years_experience }} years</p>
+          <p><strong>Posted:</strong> {{ job.created_at|format_date }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Applicants List -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Applicants ({{ applicants|length }})</h3>
+      </div>
+      <div class="card-content">
+        {% if applicants %}
+        <div class="table-container">
+          <table class="data-table applicants-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Experience</th>
+                <th>Contact</th>
+                <th>Skills</th>
+           
+              </tr>
+            </thead>
+            <tbody>
+              {% for applicant in applicants %}
+              <tr>
+                <td>
+                  <div class="applicant-info">
+                    <div class="applicant-avatar">{{ applicant.name }}</div>
+                    <div>
+                      
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <div class="match-score">
+                    <div class="score-value">{{ applicant.status }}</div>
+                    <div class="score-bar">
+                      <div class="score-fill"></div>
+                    </div>
+                  </div>
+                </td>
+                <td>{{ applicant.exp_years }} years</td>
+                <td>
+                  <div class="contact-info">
+                    <div><i class="fas fa-envelope"></i> {{ applicant.email }}</div>
+                    <div><i class="fas fa-phone"></i> {{ applicant.phone_number }}</div>
+                  </div>
+                </td>
+                <td>
+                  <div class="skills-list">
+                    {% for skill in applicant.skills[:3] %}
+                    <span class="skill-tag">{{ skill }}</span>
+                    {% endfor %}
+                    {% if applicant.skills|length > 3 %}
+                    <span class="skill-more">+{{ applicant.skills|length - 3 }} more</span>
+                    {% endif %}
+                  </div>
+                </td>
+              
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="no-applicants">
+          <p>No applicants found for this job.</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </main>
+</div>
+
+{% endblock %}

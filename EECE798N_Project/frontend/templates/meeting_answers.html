@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meeting Answers</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&family=Roboto:wght@300;400;500&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="main-content">
+    <header class="dashboard-header">
+      <div class="header-left">
+        <a href="weekly_meetings.html" class="back-button">
+          <i class="fas fa-arrow-left"></i>
+        </a>
+        <h1 class="dashboard-title">Meeting Answers</h1>
+      </div>
+      <div class="header-actions">
+        <button class="btn-outline" id="printBtn">
+          <i class="fas fa-print"></i> Print
+        </button>
+        <button class="btn-primary" id="saveBtn">
+          <i class="fas fa-save"></i> Save Answers
+        </button>
+      </div>
+    </header>
+
+    <main class="dashboard-main">
+      <!-- Meeting Details -->
+      <div class="meeting-details-card">
+        <div class="meeting-header">
+          <div class="meeting-title-section">
+            <h2 class="meeting-title">Product Development Standup</h2>
+            <div class="meeting-badges">
+              <span class="meeting-badge upcoming">Upcoming</span>
+              <span class="meeting-badge questions">5 Questions</span>
+            </div>
+          </div>
+          <div class="meeting-meta">
+            <div class="meeting-meta-item">
+              <i class="fas fa-calendar-alt"></i>
+              <span>Wednesday, May 22, 2024</span>
+            </div>
+            <div class="meeting-meta-item">
+              <i class="fas fa-clock"></i>
+              <span>09:00 AM - 10:00 AM</span>
+            </div>
+            <div class="meeting-meta-item">
+              <i class="fas fa-users"></i>
+              <span>Team Alpha</span>
+            </div>
+            <div class="meeting-meta-item">
+              <i class="fas fa-video"></i>
+              <span>Zoom Meeting</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Answer Form -->
+      <div class="answers-container">
+        <div class="section-header">
+          <h2>Record Answers</h2>
+          <div class="answer-actions">
+            <button class="btn-outline" id="addQuestionBtn">
+              <i class="fas fa-plus"></i> Add Question
+            </button>
+          </div>
+        </div>
+        
+        <form id="answersForm">
+          <!-- Question 1 -->
+          <div class="question-answer-card">
+            <div class="question-section">
+              <div class="question-number">Q1</div>
+              <div class="question-content">
+                <div class="question-text">What progress has been made on the new feature implementation?</div>
+                <div class="question-meta">
+                  <span class="question-priority high">High Priority</span>
+                </div>
+              </div>
+              <div class="question-actions">
+                <button type="button" class="btn-icon" title="Edit Question">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button type="button" class="btn-icon" title="Delete Question">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </div>
+            </div>
+            <div class="answer-section">
+              <label for="answer1">Answer:</label>
+              <textarea id="answer1" name="answer1" rows="3" placeholder="Record the answer here..."></textarea>
+              <div class="answer-tools">
+                <div class="answer-attachments">
+                  <button type="button" class="btn-text">
+                    <i class="fas fa-paperclip"></i> Add Attachment
+                  </button>
+                </div>
+                <div class="answer-status">
+                  <label class="status-label">
+                    <input type="checkbox" name="status1" id="status1">
+                    <span class="status-text">Mark as answered</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Question 2 -->
+          <div class="question-answer-card">
+            <div class="question-section">
+              <div class="question-number">Q2</div>
+              <div class="question-content">
+                <div class="question-text">Are there any blockers that need to be addressed?</div>
+                <div class="question-meta">
+                  <span class="question-priority medium">Medium Priority</span>
+                </div>
+              </div>
+              <div class="question-actions">
+                <button type="button" class="btn-icon" title="Edit Question">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button type="button" class="btn-icon" title="Delete Question">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </div>
+            </div>
+            <div class="answer-section">
+              <label for="answer2">Answer:</label>
+              <textarea id="answer2" name="answer2" rows="3" placeholder="Record the answer here..."></textarea>
+              <div class="answer-tools">
+                <div class="answer-attachments">
+                  <button type="button" class="btn-text">
+                    <i class="fas fa-paperclip"></i> Add Attachment
+                  </button>
+                </div>
+                <div class="answer-status">
+                  <label class="status-label">
+                    <input type="checkbox" name="status2" id="status2">
+                    <span class="status-text">Mark as answered</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Question 3 -->
+          <div class="question-answer-card">
+            <div class="question-section">
+              <div class="question-number">Q3</div>
+              <div class="question-content">
+                <div class="question-text">What is the timeline for the next release?</div>
+                <div class="question-meta">
+                  <span class="question-priority high">High Priority</span>
+                </div>
+              </div>
+              <div class="question-actions">
+                <button type="button" class="btn-icon" title="Edit Question">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button type="button" class="btn-icon" title="Delete Question">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </div>
+            </div>
+            <div class="answer-section">
+              <label for="answer3">Answer:</label>
+              <textarea id="answer3" name="answer3" rows="3" placeholder="Record the answer here..."></textarea>
+              <div class="answer-tools">
+                <div class="answer-attachments">
+                  <button type="button" class="btn-text">
+                    <i class="fas fa-paperclip"></i> Add Attachment
+                  </button>
+                </div>
+                <div class="answer-status">
+                  <label class="status-label">
+                    <input type="checkbox" name="status3" id="status3">
+                    <span class="status-text">Mark as answered</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Question 4 -->
+          <div class="question-answer-card">
+            <div class="question-section">
+              <div class="question-number">Q4</div>
+              <div class="question-content">
+                <div class="question-text">What resources are needed for the upcoming sprint?</div>
+                <div class="question-meta">
+                  <span class="question-priority medium">Medium Priority</span>
+                </div>
+              </div>
+              <div class="question-actions">
+                <button type="button" class="btn-icon" title="Edit Question">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button type="button" class="btn-icon" title="Delete Question">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </div>
+            </div>
+            <div class="answer-section">
+              <label for="answer4">Answer:</label>
+              <textarea id="answer4" name="answer4" rows="3" placeholder="Record the answer here..."></textarea>
+              <div class="answer-tools">
+                <div class="answer-attachments">
+                  <button type="button" class="btn-text">
+                    <i class="fas fa-paperclip"></i> Add Attachment
+                  </button>
+                </div>
+                <div class="answer-status">
+                  <label class="status-label">
+                    <input type="checkbox" name="status4" id="status4">
+                    <span class="status-text">Mark as answered</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Question 5 -->
+          <div class="question-answer-card">
+            <div class="question-section">
+              <div class="question-number">Q5</div>
+              <div class="question-content">
+                <div class="question-text">How can we improve our development process?</div>
+                <div class="question-meta">
+                  <span class="question-priority low">Low Priority</span>
+                </div>
+              </div>
+              <div class="question-actions">
+                <button type="button" class="btn-icon" title="Edit Question">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button type="button" class="btn-icon" title="Delete Question">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </div>
+            </div>
+            <div class="answer-section">
+              <label for="answer5">Answer:</label>
+              <textarea id="answer5" name="answer5" rows="3" placeholder="Record the answer here..."></textarea>
+              <div class="answer-tools">
+                <div class="answer-attachments">
+                  <button type="button" class="btn-text">
+                    <i class="fas fa-paperclip"></i> Add Attachment
+                  </button>
+                </div>
+                <div class="answer-status">
+                  <label class="status-label">
+                    <input type="checkbox" name="status5" id="status5">
+                    <span class="status-text">Mark as answered</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Notes Section -->
+          <div class="notes-section">
+            <h3>Additional Notes</h3>
+            <textarea id="meetingNotes" name="meetingNotes" rows="4" placeholder="Add any additional notes or action items from the meeting..."></textarea>
+          </div>
+          
+          <!-- Form Actions -->
+          <div class="form-actions">
+            <button type="button" class="btn-outline" id="cancelBtn">Cancel</button>
+            <button type="button" class="btn-outline" id="saveAsDraftBtn">Save as Draft</button>
+            <button type="submit" class="btn-primary">Save Answers</button>
+          </div>
+        </form>
+      </div>
+    </main>
+  </div>
+
+  <!-- Add Question Modal -->
+  <div class="modal" id="addQuestionModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Add New Question</h2>
+        <button class="close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="questionForm">
+          <div class="form-group">
+            <label for="questionText">Question</label>
+            <textarea id="questionText" rows="3" placeholder="Enter your question here..." required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="questionPriority">Priority</label>
+            <select id="questionPriority">
+              <option value="high">High</option>
+              <option value="medium" selected>Medium</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn-outline" id="cancelQuestionBtn">Cancel</button>
+            <button type="submit" class="btn-primary">Add Question</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Save button functionality
+      const saveBtn = document.getElementById('saveBtn');
+      const answersForm = document.getElementById('answersForm');
+      
+      saveBtn.addEventListener('click', function() {
+        answersForm.dispatchEvent(new Event('submit'));
+      });
+      
+      answersForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        // In a real app, this would save the answers to the database
+        alert('Answers saved successfully!');
+        window.location.href = 'weekly_meetings.html';
+      });
+      
+      // Cancel button functionality
+      const cancelBtn = document.getElementById('cancelBtn');
+      cancelBtn.addEventListener('click', function() {
+        if (confirm('Are you sure you want to cancel? Any unsaved changes will be lost.')) {
+          window.location.href = 'weekly_meetings.html';
+        }
+      });
+      
+      // Save as Draft button functionality
+      const saveAsDraftBtn = document.getElementById('saveAsDraftBtn');
+      saveAsDraftBtn.addEventListener('click', function() {
+        // In a real app, this would save the draft to the database
+        alert('Draft saved successfully!');
+      });
+      
+      // Print button functionality
+      const printBtn = document.getElementById('printBtn');
+      printBtn.addEventListener('click', function() {
+        window.print();
+      });
+      
+      // Modal functionality
+      const modal = document.getElementById('addQuestionModal');
+      const addQuestionBtn = document.getElementById('addQuestionBtn');
+      const closeModal = document.querySelector('.close-modal');
+      const cancelQuestionBtn = document.getElementById('cancelQuestionBtn');
+      
+      addQuestionBtn.addEventListener('click', function() {
+        modal.style.display = 'block';
+      });
+      
+      closeModal.addEventListener('click', function() {
+        modal.style.display = 'none';
+      });
+      
+      cancelQuestionBtn.addEventListener('click', function() {
+        modal.style.display = 'none';
+      });
+      
+      window.addEventListener('click', function(event) {
+        if (event.target === modal) {
+          modal.style.display = 'none';
+        }
+      });
+      
+      // Question form submission
+      const questionForm = document.getElementById('questionForm');
+      questionForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Get form values
+        const questionText = document.getElementById('questionText').value;
+        const questionPriority = document.getElementById('questionPriority').value;
+        
+        // In a real app, this would add the question to the database
+        // For demo purposes, we'll add it to the DOM
+        const questionCount = document.querySelectorAll('.question-answer-card').length;
+        const newQuestionNumber = questionCount + 1;
+        
+        const newQuestionHTML = `
+          <div class="question-answer-card">
+            <div class="question-section">
+              <div class="question-number">Q${newQuestionNumber}</div>
+              <div class="question-content">
+                <div class="question-text">${questionText}</div>
+                <div class="question-meta">
+                  <span class="question-priority ${questionPriority}">${questionPriority.charAt(0).toUpperCase() + questionPriority.slice(1)} Priority</span>
+                </div>
+              </div>
+              <div class="question-actions">
+                <button type="button" class="btn-icon" title="Edit Question">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button type="button" class="btn-icon" title="Delete Question">
+                  <i class="fas fa-trash-alt"></i>
+                </button>
+              </div>
+            </div>
+            <div class="answer-section">
+              <label for="answer${newQuestionNumber}">Answer:</label>
+              <textarea id="answer${newQuestionNumber}" name="answer${newQuestionNumber}" rows="3" placeholder="Record the answer here..."></textarea>
+              <div class="answer-tools">
+                <div class="answer-attachments">
+                  <button type="button" class="btn-text">
+                    <i class="fas fa-paperclip"></i> Add Attachment
+                  </button>
+                </div>
+                <div class="answer-status">
+                  <label class="status-label">
+                    <input type="checkbox" name="status${newQuestionNumber}" id="status${newQuestionNumber}">
+                    <span class="status-text">Mark as answered</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        
+        // Insert the new question before the notes section
+        const notesSection = document.querySelector('.notes-section');
+        notesSection.insertAdjacentHTML('beforebegin', newQuestionHTML);
+        
+        // Close the modal and reset the form
+        modal.style.display = 'none';
+        questionForm.reset();
+        
+        // Update meeting badges
+        const questionsBadge = document.querySelector('.meeting-badge.questions');
+        questionsBadge.textContent = `${newQuestionNumber} Questions`;
+      });
+      
+      // Delete question functionality
+      document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('fa-trash-alt') || e.target.parentElement.classList.contains('fa-trash-alt')) {
+          const deleteBtn = e.target.closest('.btn-icon');
+          if (deleteBtn && deleteBtn.title === 'Delete Question') {
+            if (confirm('Are you sure you want to delete this question?')) {
+              const questionCard = deleteBtn.closest('.question-answer-card');
+              questionCard.remove();
+              
+              // Update question numbers
+              const questionCards = document.querySelectorAll('.question-answer-card');
+              questionCards.forEach((card, index) => {
+                const questionNumber = card.querySelector('.question-number');
+                questionNumber.textContent = `Q${index + 1}`;
+                
+                const answerTextarea = card.querySelector('textarea');
+                answerTextarea.id = `answer${index + 1}`;
+                answerTextarea.name = `answer${index + 1}`;
+                
+                const statusCheckbox = card.querySelector('input[type="checkbox"]');
+                statusCheckbox.id = `status${index + 1}`;
+                statusCheckbox.name = `status${index + 1}`;
+              });
+              
+              // Update meeting badges
+              const questionsBadge = document.querySelector('.meeting-badge.questions');
+              questionsBadge.textContent = `${questionCards.length} Questions`;
+            }
+          }
+        }
+      });
+    });
+  </script>
+
+  <style>
+    /* Variables */
+    :root {
+      --default-font: "Roboto", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+      --heading-font: "Raleway", sans-serif;
+      --nav-font: "Poppins", sans-serif;
+      
+      --background-color: #f4fafd;
+      --default-color: #444444;
+      --heading-color: #222222;
+      --accent-color: #3a6470;
+      --surface-color: #ffffff;
+      --contrast-color: #ffffff;
+      
+      --primary-color: #3a6470;
+      --primary-light: rgba(58, 100, 112, 0.1);
+      --primary-dark: #2a4b55;
+      --secondary-color: #5a8a96;
+      --success-color: #2e7d32;
+      --success-light: #e3f7e8;
+      --warning-color: #ed6c02;
+      --warning-light: #fff4e5;
+      --error-color: #c62828;
+      --error-light: #ffebee;
+      --info-color: #0288d1;
+      --info-light: #e1f5fe;
+      
+      --gray-50: #fafafa;
+      --gray-100: #f5f5f5;
+      --gray-200: #eeeeee;
+      --gray-300: #e0e0e0;
+      --gray-400: #bdbdbd;
+      --gray-500: #9e9e9e;
+      --gray-600: #757575;
+      --gray-700: #616161;
+      --gray-800: #424242;
+      --gray-900: #212121;
+      
+      --border-radius: 8px;
+      --card-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      --transition: all 0.3s ease;
+    }
+
+    /* General Styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--default-font);
+      color: var(--default-color);
+      background-color: var(--background-color);
+      line-height: 1.5;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: var(--heading-font);
+      color: var(--heading-color);
+    }
+
+    a {
+      color: var(--accent-color);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    a:hover {
+      color: var(--primary-dark);
+    }
+
+    /* Main Content */
+    .main-content {
+      min-height: 100vh;
+    }
+
+    /* Dashboard Header */
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 2rem;
+      background-color: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .dashboard-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--gray-800);
+      margin: 0;
+    }
+
+    .back-button {
+      background: none;
+      border: none;
+      color: var(--gray-600);
+      font-size: 1.25rem;
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 50%;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .back-button:hover {
+      background-color: var(--gray-200);
+      color: var(--gray-800);
+    }
+    
+    .header-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: var(--border-radius);
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--primary-dark);
+    }
+    
+    .btn-outline {
+      background-color: transparent;
+      color: var(--gray-700);
+      border: 1px solid var(--gray-300);
+      padding: 0.5rem 1rem;
+      border-radius: var(--border-radius);
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    
+    .btn-outline:hover {
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+    }
+    
+    .btn-text {
+      background: none;
+      border: none;
+      color: var(--primary-color);
+      padding: 0.5rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+    }
+    
+    .btn-text:hover {
+      color: var(--primary-dark);
+      text-decoration: underline;
+    }
+    
+    .btn-icon {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--border-radius);
+      background-color: var(--gray-100);
+      color: var(--gray-700);
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .btn-icon:hover {
+      background-color: var(--gray-200);
+      color: var(--gray-900);
+    }
+
+    /* Dashboard Main */
+    .dashboard-main {
+      padding: 1.5rem 2rem;
+      display: grid;
+      gap: 1.5rem;
+    }
+    
+    /* Meeting Details Card */
+    .meeting-details-card {
+      background-color: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--card-shadow);
+      padding: 1.5rem;
+    }
+    
+    .meeting-header {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .meeting-title-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    
+    .meeting-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--gray-800);
+      margin: 0;
+    }
+    
+    .meeting-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    
+    .meeting-badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    
+    .meeting-badge.upcoming {
+      background-color: var(--info-light);
+      color: var(--info-color);
+    }
+    
+    .meeting-badge.in-progress {
+      background-color: var(--warning-light);
+      color: var(--warning-color);
+    }
+    
+    .meeting-badge.completed {
+      background-color: var(--success-light);
+      color: var(--success-color);
+    }
+    
+    .meeting-badge.questions {
+      background-color: var(--primary-light);
+      color: var(--primary-color);
+    }
+    
+    .meeting-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    
+    .meeting-meta-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--gray-700);
+      font-size: 0.875rem;
+    }
+    
+    .meeting-meta-item i {
+      color: var(--gray-500);
+    }
+    
+    /* Answers Container */
+    .answers-container {
+      background-color: white;
+      border-radius: var(--border-radius);
+      box-shadow: var(--card-shadow);
+      padding: 1.5rem;
+    }
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .section-header h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--gray-800);
+      margin: 0;
+    }
+    
+    /* Question Answer Card */
+    .question-answer-card {
+      border: 1px solid var(--gray-200);
+      border-radius: var(--border-radius);
+      margin-bottom: 1.5rem;
+      overflow: hidden;
+    }
+    
+    .question-section {
+      display: flex;
+      padding: 1rem;
+      background-color: var(--gray-50);
+      border-bottom: 1px solid var(--gray-200);
+    }
+    
+    .question-number {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--primary-color);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      margin-right: 1rem;
+    }
+    
+    .question-content {
+      flex: 1;
+    }
+    
+    .question-text {
+      font-weight: 500;
+      color: var(--gray-800);
+      margin-bottom: 0.5rem;
+    }
+    
+    .question-meta {
+      display: flex;
+      gap: 0.75rem;
+    }
+    
+    .question-priority {
+      display: inline-block;
+      padding: 0.125rem 0.5rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    
+    .question-priority.high {
+      background-color: var(--error-light);
+      color: var(--error-color);
+    }
+    
+    .question-priority.medium {
+      background-color: var(--warning-light);
+      color: var(--warning-color);
+    }
+    
+    .question-priority.low {
+      background-color: var(--info-light);
+      color: var(--info-color);
+    }
+    
+    .question-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .answer-section {
+      padding: 1rem;
+    }
+    
+    .answer-section label {
+      display: block;
+      font-weight: 500;
+      color: var(--gray-700);
+      margin-bottom: 0.5rem;
+    }
+    
+    .answer-section textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--border-radius);
+      font-family: var(--default-font);
+      font-size: 0.875rem;
+      resize: vertical;
+      transition: var(--transition);
+    }
+    
+    .answer-section textarea:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(58, 100, 112, 0.1);
+    }
+    
+    .answer-tools {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.75rem;
+    }
+    
+    .status-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+    }
+    
+    .status-text {
+      font-size: 0.875rem;
+      color: var(--gray-700);
+    }
+    
+    /* Notes Section */
+    .notes-section {
+      margin-bottom: 1.5rem;
+    }
+    
+    .notes-section h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--gray-800);
+      margin-bottom: 0.75rem;
+    }
+    
+    .notes-section textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--border-radius);
+      font-family: var(--default-font);
+      font-size: 0.875rem;
+      resize: vertical;
+      transition: var(--transition);
+    }
+    
+    .notes-section textarea:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(58, 100, 112, 0.1);
+    }
+    
+    /* Form Actions */
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+    
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      overflow: auto;
+    }
+    
+    .modal-content {
+      background-color: white;
+      margin: 10% auto;
+      padding: 0;
+      border-radius: var(--border-radius);
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+      max-width: 500px;
+      width: 90%;
+      position: relative;
+    }
+    
+    .modal-header {
+      padding: 1.25rem;
+      border-bottom: 1px solid var(--gray-200);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .modal-header h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 0;
+    }
+    
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--gray-500);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    
+    .close-modal:hover {
+      color: var(--error-color);
+    }
+    
+    .modal-body {
+      padding: 1.25rem;
+    }
+    
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+    
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--gray-700);
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--gray-300);
+      border-radius: var(--border-radius);
+      font-family: var(--default-font);
+      font-size: 0.875rem;
+      transition: var(--transition);
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(58, 100, 112, 0.1);
+    }
+    
+    /* Print Styles */
+    @media print {
+      .dashboard-header,
+      .btn-icon,
+      .btn-text,
+      .answer-tools,
+      .form-actions {
+        display: none !important;
+      }
+      
+      .main-content,
+      .dashboard-main,
+      .meeting-details-card,
+      .answers-container {
+        padding: 0 !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+      }
+      
+      .question-answer-card {
+        page-break-inside: avoid;
+      }
+    }
+    
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+      .dashboard-header {
+        padding: 1rem;
+      }
+      
+      .dashboard-main {
+        padding: 1rem;
+      }
+      
+      .meeting-title-section {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+      
+      .question-section {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      
+      .question-number {
+        margin-right: 0;
+      }
+      
+      .answer-tools {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+      }
+      
+      .form-actions {
+        flex-direction: column;
+      }
+      
+      .form-actions button {
+        width: 100%;
+      }
+    }
+  </style>
+</body>
+</html>

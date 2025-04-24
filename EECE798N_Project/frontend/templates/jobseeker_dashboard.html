@@ -1,0 +1,171 @@
+{% extends "base_jobseeker.html" %}
+
+{% block content %}
+<div class="main-content">
+  <header class="dashboard-header">
+    <h1 class="dashboard-title">Job Listings</h1>
+  </header>
+
+  <main class="dashboard-main">
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Available Jobs</h3>
+      </div>
+      <div class="card-content">
+        <!-- Search and Filter Section -->
+        <div class="job-search-container">
+          <div class="search-box">
+            <input type="text" id="jobSearch" class="form-input" placeholder="Search job titles, companies...">
+            <button id="searchBtn" class="btn btn-primary">
+              <i class="fas fa-search"></i> Search
+            </button>
+          </div>
+          <div class="filter-box">
+            <select id="experienceFilter" class="form-input">
+              <option value="">All Experience Levels</option>
+              <option value="0">Entry Level (0 years)</option>
+              <option value="1">1+ years</option>
+              <option value="3">3+ years</option>
+              <option value="5">5+ years</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Job Listings Table -->
+        <div class="table-container">
+          <table class="data-table jobs-table" id="jobsTable">
+            <thead>
+              <tr>
+                <th>Job Title</th>
+                <th>Department</th>
+                <th>Experience Required</th>
+                <th>Status</th>
+                <th>Posted Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for job in jobs %}
+              <tr data-title="{{ job.job_title|lower }}" data-company="{{ job.department_name|lower }}" data-experience="{{ job.years_experience }}">
+                <td>{{ job.job_title }}</td>
+                <td>{{ job.department_name }}</td>
+                <td>{{ job.years_experience }} years</td>
+                <td>{{ job.status }}</td>
+                <td>{{ job.created_at }}</td>
+                <td>
+                  <div class="action-buttons">
+                    {% if job.already_applied %}
+                    <p class="text-success">You have already applied to this job.</p>
+                  {% else %}
+                    <form method="POST" action="{{ url_for('jobseeker_dashboard') }}" style="display: inline;">
+                      <input type="hidden" name="job_id" value="{{ job.id }}">
+                      <button type="submit" class="btn btn-sm btn-success">Apply Now</button>
+                    </form>
+                    {% endif %}
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+          <button class="btn btn-outline pagination-btn" id="prevPage" disabled>
+            <i class="fas fa-chevron-left"></i> Previous
+          </button>
+          <span id="pageInfo">Page 1 of 1</span>
+          <button class="btn btn-outline pagination-btn" id="nextPage">
+            Next <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Search functionality
+    const jobSearch = document.getElementById('jobSearch');
+    const searchBtn = document.getElementById('searchBtn');
+    const experienceFilter = document.getElementById('experienceFilter');
+    const jobsTable = document.getElementById('jobsTable');
+    const rows = jobsTable.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+    
+    function filterJobs() {
+      const searchTerm = jobSearch.value.toLowerCase();
+      const experienceLevel = experienceFilter.value;
+      
+      for (let i = 0; i < rows.length; i++) {
+        const title = rows[i].getAttribute('data-title');
+        const company = rows[i].getAttribute('data-company');
+        const experience = rows[i].getAttribute('data-experience');
+        
+        const titleMatch = title.includes(searchTerm);
+        const companyMatch = company.includes(searchTerm);
+        const experienceMatch = experienceLevel === '' || parseInt(experience) >= parseInt(experienceLevel);
+        
+        if ((titleMatch || companyMatch) && experienceMatch) {
+          rows[i].style.display = '';
+        } else {
+          rows[i].style.display = 'none';
+        }
+      }
+    }
+    
+    // Event listeners
+    searchBtn.addEventListener('click', filterJobs);
+    jobSearch.addEventListener('keyup', function(e) {
+      if (e.key === 'Enter') {
+        filterJobs();
+      }
+    });
+    experienceFilter.addEventListener('change', filterJobs);
+    
+    // Simple pagination functionality
+    const prevPage = document.getElementById('prevPage');
+    const nextPage = document.getElementById('nextPage');
+    const pageInfo = document.getElementById('pageInfo');
+    
+    let currentPage = 1;
+    const rowsPerPage = 10;
+    const totalPages = Math.ceil(rows.length / rowsPerPage);
+    
+    function updatePagination() {
+      pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+      prevPage.disabled = currentPage === 1;
+      nextPage.disabled = currentPage === totalPages;
+      
+      // Show only rows for current page
+      const start = (currentPage - 1) * rowsPerPage;
+      const end = start + rowsPerPage;
+      
+      for (let i = 0; i < rows.length; i++) {
+        if (i >= start && i < end && rows[i].style.display !== 'none') {
+          rows[i].style.display = '';
+        } else {
+          rows[i].style.display = 'none';
+        }
+      }
+    }
+    
+    prevPage.addEventListener('click', function() {
+      if (currentPage > 1) {
+        currentPage--;
+        updatePagination();
+      }
+    });
+    
+    nextPage.addEventListener('click', function() {
+      if (currentPage < totalPages) {
+        currentPage++;
+        updatePagination();
+      }
+    });
+    
+    // Initialize
+    updatePagination();
+  });
+</script>
+{% endblock %}

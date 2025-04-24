@@ -1,0 +1,160 @@
+{% extends "monitoring_base.html" %}
+
+{% block content %}
+    <div class="main-content">
+        <header class="dashboard-header">
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1 class="dashboard-title">CV Upload Metrics</h1>
+            <div class="header-actions">
+                <div class="notification-bell">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge">3</span>
+                </div>
+                <div class="user-profile">
+                    <img src="https://via.placeholder.com/40" alt="Admin" class="user-avatar">
+                    <span class="user-name">Admin</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="dashboard-main">
+            <!-- Metrics Stats -->
+            <div class="dashboard-stats">
+                <div class="card stat-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Total Uploads</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="stat-value" id="totalUploads">0</div>
+                        <p class="stat-change">All time uploads</p>
+                    </div>
+                </div>
+
+                <div class="card stat-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Success Rate</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="stat-value" id="successRate">0%</div>
+                        <p class="stat-change">Successful uploads</p>
+                    </div>
+                </div>
+
+                <div class="card stat-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Average Processing Time</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="stat-value" id="avgTime">0s</div>
+                        <p class="stat-change">Per CV upload</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Chart -->
+            <div class="dashboard-row">
+                <div class="card full-width">
+                    <div class="card-header">
+                        <h3 class="card-title">Upload Statistics</h3>
+                    </div>
+                    <div class="card-content">
+                        <div id="uploadChart" style="width:100%; height:400px;"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        async function fetchMetrics() {
+            const res = await fetch('/metrics');
+            const text = await res.text();
+
+            const metrics = {};
+            text.split('\n').forEach(line => {
+                if (line.startsWith('#') || line.trim() === '') return;
+                const [key, value] = line.split(' ');
+                metrics[key] = parseFloat(value);
+            });
+
+            const success = metrics['upload_cv_success_total'] || 0;
+            const failure = metrics['upload_cv_failure_total'] || 0;
+            const total = metrics['upload_cv_requests_total'] || 0;
+            const avgTime = metrics['upload_cv_processing_seconds_sum'] / 
+                          (metrics['upload_cv_processing_seconds_count'] || 1);
+
+            // Update stat cards
+            document.getElementById('totalUploads').textContent = total;
+            document.getElementById('successRate').textContent = 
+                total > 0 ? Math.round((success / total) * 100) + '%' : '0%';
+            document.getElementById('avgTime').textContent = avgTime.toFixed(2) + 's';
+
+            renderChart(success, failure, avgTime);
+        }
+
+        function renderChart(success, failure, avgTime) {
+            Highcharts.chart('uploadChart', {
+                chart: {
+                    type: 'column',
+                    backgroundColor: 'transparent',
+                    style: {
+                        fontFamily: 'inherit'
+                    }
+                },
+                title: {
+                    text: 'CV Upload Metrics',
+                    style: {
+                        color: '#333',
+                        fontWeight: '600'
+                    }
+                },
+                xAxis: {
+                    categories: ['Success', 'Failure', 'Average Time (s)'],
+                    labels: {
+                        style: {
+                            color: '#666'
+                        }
+                    }
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Count / Time',
+                        style: {
+                            color: '#666'
+                        }
+                    },
+                    gridLineColor: '#eee'
+                },
+                plotOptions: {
+                    column: {
+                        borderRadius: 4,
+                        colorByPoint: true,
+                        colors: ['#4CAF50', '#F44336', '#2196F3']
+                    }
+                },
+                legend: {
+                    enabled: false
+                },
+                tooltip: {
+                    valueSuffix: success === 1 || failure === 1 ? ' upload' : ' uploads'
+                },
+                series: [{
+                    name: 'CV Uploads',
+                    data: [success, failure, avgTime || 0],
+                    dataLabels: {
+                        enabled: true,
+                        color: '#333',
+                        style: {
+                            textOutline: 'none'
+                        }
+                    }
+                }]
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchMetrics);
+    </script>
+{% endblock %}

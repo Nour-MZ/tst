@@ -1,0 +1,990 @@
+{% extends "base_hr.html" %}
+
+{% block content %}
+<div class="main-content">
+  <header class="dashboard-header">
+    <div class="header-left">
+      <button class="sidebar-toggle" id="sidebarToggle">
+        <i class="fas fa-bars"></i>
+      </button>
+      <h1 class="dashboard-title">Applicants for {{ job.job_title }}</h1>
+    </div>
+    <div class="header-actions">
+      <button class="btn-outline">
+        <i class="fas fa-filter"></i> Filter
+      </button>
+      <button class="btn-primary">
+        <i class="fas fa-download"></i> Export
+      </button>
+    </div>
+  </header>
+
+  <main class="dashboard-main">
+    <!-- Job Summary -->
+    <div class="job-summary-card">
+      <div class="job-summary-header">
+        <h3>Job Details</h3>
+        <span class="status-badge {{ 'open' if job.status == 'open' else 'closed' }}">
+          {{ job.status|capitalize }}
+        </span>
+      </div>
+      <div class="job-summary-content">
+        <div class="job-detail-item">
+          <div class="detail-icon">
+            <i class="fas fa-briefcase"></i>
+          </div>
+          <div class="detail-content">
+            <span class="detail-label">Level</span>
+            <span class="detail-value">{{ job.job_level }}</span>
+          </div>
+        </div>
+        <div class="job-detail-item">
+          <div class="detail-icon">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="detail-content">
+            <span class="detail-label">Experience</span>
+            <span class="detail-value">{{ job.years_experience }} years</span>
+          </div>
+        </div>
+        <div class="job-detail-item">
+          <div class="detail-icon">
+            <i class="fas fa-calendar-alt"></i>
+          </div>
+          <div class="detail-content">
+            <span class="detail-label">Posted</span>
+            <span class="detail-value">{{ job.date_offering|format_date }}</span>
+          </div>
+        </div>
+        <div class="job-detail-item">
+          <div class="detail-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="detail-content">
+            <span class="detail-label">Applicants</span>
+            <span class="detail-value">{{ applicants|length }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Applicants Stats -->
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-icon qualified-icon">
+          <i class="fas fa-check-circle"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value">{{ applicants|selectattr('qualified_cv', 'equalto', true)|list|length }}</div>
+          <div class="stat-label">Qualified</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon unqualified-icon">
+          <i class="fas fa-times-circle"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value">{{ applicants|selectattr('qualified_cv', 'equalto', false)|list|length }}</div>
+          <div class="stat-label">Unqualified</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon high-match-icon">
+          <i class="fas fa-star"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value">{{ applicants | selectattr('similarity_score', 'ge', 80) | list | length }}</div>
+          <div class="stat-label">High Match</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon pending-icon">
+          <i class="fas fa-hourglass-half"></i>
+        </div>
+        <div class="stat-content">
+          <div class="stat-value">{{ applicants | selectattr('status', 'equalto', 'under_review') | list | length }}</div>
+          <div class="stat-label">Pending Review</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Applicants List -->
+    <div class="applicants-card">
+      <div class="applicants-header">
+        <h3>Applicants</h3>
+        <div class="search-container">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" class="search-input" placeholder="Search applicants...">
+        </div>
+      </div>
+      <div class="applicants-content">
+        {% if applicants %}
+        <div class="table-container">
+          <table class="applicants-table">
+            <thead>
+              <tr>
+                <th>
+                  <div class="th-content">
+                    <span>Applicant</span>
+                    <i class="fas fa-sort"></i>
+                  </div>
+                </th>
+                <th>
+                  <div class="th-content">
+                    <span>Match Score</span>
+                    <i class="fas fa-sort"></i>
+                  </div>
+                </th>
+                <th>
+                  <div class="th-content">
+                    <span>Experience</span>
+                    <i class="fas fa-sort"></i>
+                  </div>
+                </th>
+                <th>Contact</th>
+                <th>Skills</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for applicant in applicants %}
+              <tr class="{{ 'high-match' if applicant.similarity_score >= 80 }}">
+                <td>
+                  <div class="applicant-info">
+                    <div class="applicant-avatar" style="background-color: {{ ['#4CAF50', '#2196F3', '#9C27B0', '#FF9800', '#F44336']|random }}">
+                      {{ applicant.name|first|upper }}
+                    </div>
+                    <div class="applicant-details">
+                      <div class="applicant-name">{{ applicant.name }}</div>
+                      <div class="applicant-status">
+                        <span class="status-badge {{ 'qualified' if applicant.qualified_cv else 'unqualified' }}">
+                          {{ 'Qualified' if applicant.qualified_cv else 'Unqualified' }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+            
+                <td>
+                  <div class="match-score">
+                    <div class="score-value">{{ applicant.similarity_score }}%</div>
+                    <div class="score-bar">
+                      <div class="score-fill" style="width: {{ applicant.similarity_score }}%;
+                        {% if applicant.similarity_score >= 80 %}
+                          background-color: var(--success-color);
+                        {% elif applicant.similarity_score >= 60 %}
+                          background-color: var(--warning-color);
+                        {% else %}
+                          background-color: var(--error-color);
+                        {% endif %}">
+                      </div>
+                    </div>
+                  </div>
+                </td>
+            
+                <td>
+                  <div class="experience-value">
+                    <i class="fas fa-briefcase"></i>
+                    <span>{{ applicant.exp_years }} years</span>
+                  </div>
+                </td>
+            
+                <td>
+                  <div class="contact-info">
+                    <div class="contact-item">
+                      <i class="fas fa-envelope"></i>
+                      <a href="mailto:{{ applicant.email }}">{{ applicant.email }}</a>
+                    </div>
+                    <div class="contact-item">
+                      <i class="fas fa-phone"></i>
+                      <a href="tel:{{ applicant.phone_number }}">{{ applicant.phone_number }}</a>
+                    </div>
+                  </div>
+                </td>
+            
+                <td>
+                  <div class="skills-list">
+                    {% for skill in applicant.skills[:3] %}
+                      <span class="skill-tag">{{ skill }}</span>
+                    {% endfor %}
+                    {% if applicant.skills|length > 3 %}
+                      <span class="skill-more" title="{{ applicant.skills[3:]|join(', ') }}">+{{ applicant.skills|length - 3 }}</span>
+                    {% endif %}
+                  </div>
+                </td>
+                
+                <td>
+                  <span class="status-badge 
+                    {% if applicant.status == 'interview_scheduled' %}interview
+                    {% elif applicant.status == 'rejected' %}rejected
+                    {% else %}under-review{% endif %}">
+                    {{ applicant.status|replace('_', ' ')|title }}
+                  </span>
+                </td>
+            
+                <td>
+                  <div class="action-buttons">
+                    {% if applicant.similarity_score < 60 %}
+                      <a href="{{ url_for('reject_applicant', applicant_id=applicant.id, job_id=job['job']['id']) }}" 
+                         class="btn-reject" title="Reject Applicant"
+                         onclick="return confirm('Are you sure you want to reject this applicant?');">
+                        <i class="fas fa-times"></i>
+                      </a>
+                    {% else %}
+                      <a href="{{ url_for('schedule_meeting', applicant_id=applicant.id, job_id=job['job']['id']) }}" 
+                         class="btn-schedule" title="Schedule Interview">
+                        <i class="fas fa-calendar-alt"></i>
+                      </a>
+                    {% endif %}
+            
+                    <div class="dropdown">
+                      <button class="btn-icon dropdown-toggle">
+                        <i class="fas fa-ellipsis-v"></i>
+                      </button>
+                      <div class="dropdown-menu">
+                        <a href="#" class="dropdown-item">
+                          <i class="fas fa-envelope"></i> Send Email
+                        </a>
+                        <a href="#" class="dropdown-item">
+                          <i class="fas fa-file-download"></i> Download CV
+                        </a>
+                        <a href="#" class="dropdown-item">
+                          <i class="fas fa-user-plus"></i> Add to Shortlist
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        {% else %}
+        <div class="no-applicants">
+          <div class="empty-state">
+            <i class="fas fa-users empty-icon"></i>
+            <h3>No Applicants Yet</h3>
+            <p>There are currently no applicants for this job position.</p>
+            <button class="btn-primary">Share Job Posting</button>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </main>
+</div>
+
+
+<style>
+  /* Variables */
+  :root {
+    --primary-color: var(--accent-color, #3a6470);
+    --primary-light: rgba(58, 100, 112, 0.1);
+    --success-color: #2e7d32;
+    --success-light: #e3f7e8;
+    --warning-color: #ed6c02;
+    --warning-light: #fff4e5;
+    --error-color: #c62828;
+    --error-light: #ffebee;
+    --gray-100: #f8f9fa;
+    --gray-200: #e9ecef;
+    --gray-300: #dee2e6;
+    --gray-400: #ced4da;
+    --gray-500: #adb5bd;
+    --gray-600: #6c757d;
+    --gray-700: #495057;
+    --gray-800: #343a40;
+    --gray-900: #212529;
+    --border-radius: 8px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+    --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+    --transition: all 0.3s ease;
+  }
+
+  /* Main Content */
+  .main-content {
+    padding: 0;
+    background-color: var(--gray-100);
+    min-height: 100vh;
+  }
+
+  /* Dashboard Header */
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    background-color: white;
+    box-shadow: var(--shadow-sm);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .dashboard-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--gray-800);
+    margin: 0;
+  }
+
+  .sidebar-toggle {
+    background: none;
+    border: none;
+    color: var(--gray-600);
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: var(--transition);
+  }
+
+  .sidebar-toggle:hover {
+    background-color: var(--gray-200);
+    color: var(--gray-800);
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .btn-outline {
+    background: none;
+    border: 1px solid var(--gray-300);
+    color: var(--gray-700);
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition);
+  }
+
+  .btn-outline:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+  }
+
+  .btn-primary {
+    background-color: var(--primary-color);
+    border: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition);
+  }
+
+  .btn-primary:hover {
+    background-color: #2a4b55;
+  }
+
+  /* Dashboard Main */
+  .dashboard-main {
+    padding: 1.5rem 2rem;
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  /* Job Summary Card */
+  .job-summary-card {
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+  }
+
+  .job-summary-header {
+    padding: 1.25rem;
+    border-bottom: 1px solid var(--gray-200);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .job-summary-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: var(--gray-800);
+  }
+
+  .job-summary-content {
+    padding: 1.25rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .job-detail-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .detail-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--primary-light);
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+  }
+
+  .detail-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .detail-label {
+    font-size: 0.875rem;
+    color: var(--gray-600);
+    margin-bottom: 0.25rem;
+  }
+
+  .detail-value {
+    font-weight: 600;
+    color: var(--gray-800);
+  }
+
+  /* Stats Container */
+  .stats-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .stat-card {
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+  }
+
+  .qualified-icon {
+    background-color: var(--success-light);
+    color: var(--success-color);
+  }
+
+  .unqualified-icon {
+    background-color: var(--error-light);
+    color: var(--error-color);
+  }
+
+  .high-match-icon {
+    background-color: var(--warning-light);
+    color: var(--warning-color);
+  }
+
+  .pending-icon {
+    background-color: var(--gray-200);
+    color: var(--gray-700);
+  }
+
+  .stat-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--gray-800);
+    line-height: 1.2;
+  }
+
+  .stat-label {
+    font-size: 0.875rem;
+    color: var(--gray-600);
+  }
+
+  /* Applicants Card */
+  .applicants-card {
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+  }
+
+  .applicants-header {
+    padding: 1.25rem;
+    border-bottom: 1px solid var(--gray-200);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .applicants-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: var(--gray-800);
+  }
+
+  .search-container {
+    position: relative;
+    width: 300px;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--gray-500);
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 0.5rem 0.75rem 0.5rem 2.25rem;
+    border: 1px solid var(--gray-300);
+    border-radius: var(--border-radius);
+    font-size: 0.875rem;
+    transition: var(--transition);
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(58, 100, 112, 0.1);
+  }
+
+  .applicants-content {
+    padding: 0;
+  }
+
+  /* Table Styles */
+  .table-container {
+    overflow-x: auto;
+  }
+
+  .applicants-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .applicants-table th {
+    background-color: var(--gray-100);
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--gray-700);
+    border-bottom: 1px solid var(--gray-300);
+    white-space: nowrap;
+  }
+
+  .th-content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .th-content i {
+    font-size: 0.75rem;
+    color: var(--gray-500);
+    cursor: pointer;
+  }
+
+  .applicants-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--gray-200);
+    vertical-align: middle;
+  }
+
+  .applicants-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .applicants-table tr:hover {
+    background-color: var(--gray-100);
+  }
+
+  tr.high-match {
+    background-color: rgba(237, 108, 2, 0.05);
+  }
+
+  tr.high-match:hover {
+    background-color: rgba(237, 108, 2, 0.1);
+  }
+
+  /* Applicant Info */
+  .applicant-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .applicant-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  .applicant-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .applicant-name {
+    font-weight: 600;
+    color: var(--gray-800);
+  }
+
+  /* Match Score */
+  .match-score {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    max-width: 200px;
+  }
+  
+  .score-value {
+    font-weight: 600;
+    min-width: 40px;
+  }
+  
+  .score-bar {
+    flex-grow: 1;
+    height: 8px;
+    background-color: var(--gray-200);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  
+  .score-fill {
+    height: 100%;
+    border-radius: 4px;
+  }
+
+  /* Experience */
+  .experience-value {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--gray-700);
+  }
+
+  .experience-value i {
+    color: var(--gray-500);
+  }
+
+  /* Contact Info */
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .contact-item i {
+    color: var(--gray-500);
+    width: 16px;
+  }
+
+  .contact-item a {
+    color: var(--gray-700);
+    text-decoration: none;
+    transition: var(--transition);
+  }
+
+  .contact-item a:hover {
+    color: var(--primary-color);
+  }
+
+  /* Skills */
+  .skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .skill-tag {
+    background-color: var(--primary-light);
+    color: var(--primary-color);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .skill-more {
+    background-color: var(--gray-200);
+    color: var(--gray-700);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  /* Action Buttons */
+  .action-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .btn-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    background-color: var(--gray-100);
+    color: var(--gray-700);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+  }
+
+  .btn-icon:hover {
+    background-color: var(--gray-200);
+    color: var(--gray-800);
+  }
+  
+  .btn-reject {
+    width: 32px;
+    height: 32px;
+    background-color: var(--error-light);
+    color: var(--error-color);
+    border: none;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+  }
+  
+  .btn-reject:hover {
+    background-color: #ffcdd2;
+  }
+  
+  .btn-schedule {
+    width: 32px;
+    height: 32px;
+    background-color: var(--success-light);
+    color: var(--success-color);
+    border: none;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+  }
+  
+  .btn-schedule:hover {
+    background-color: #c8e6c9;
+  }
+
+  /* Status Badges */
+  .status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    display: inline-block;
+  }
+  
+  .status-badge.qualified {
+    background-color: var(--success-light);
+    color: var(--success-color);
+  }
+  
+  .status-badge.unqualified {
+    background-color: var(--error-light);
+    color: var(--error-color);
+  }
+  
+  .status-badge.open {
+    background-color: #e3f2fd;
+    color: #1565c0;
+  }
+  
+  .status-badge.closed {
+    background-color: var(--gray-200);
+    color: var(--gray-700);
+  }
+
+  /* Dropdown */
+  .dropdown {
+    position: relative;
+  }
+
+  .dropdown-toggle {
+    background-color: var(--gray-100);
+    color: var(--gray-700);
+  }
+
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-lg);
+    min-width: 180px;
+    z-index: 100;
+    padding: 0.5rem 0;
+    display: none;
+  }
+
+  .dropdown:hover .dropdown-menu {
+    display: block;
+  }
+
+  .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 1rem;
+    color: var(--gray-700);
+    text-decoration: none;
+    transition: var(--transition);
+  }
+
+  .dropdown-item:hover {
+    background-color: var(--gray-100);
+    color: var(--gray-900);
+  }
+
+  .dropdown-item i {
+    color: var(--gray-600);
+    width: 16px;
+  }
+
+  /* Empty State */
+  .no-applicants {
+    padding: 3rem;
+  }
+
+  .empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .empty-icon {
+    font-size: 3rem;
+    color: var(--gray-400);
+    margin-bottom: 1rem;
+  }
+
+  .empty-state h3 {
+    margin: 0 0 0.5rem 0;
+    color: var(--gray-700);
+  }
+
+  .empty-state p {
+    color: var(--gray-600);
+    margin-bottom: 1.5rem;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .dashboard-header {
+      padding: 1rem;
+    }
+
+    .dashboard-main {
+      padding: 1rem;
+    }
+
+    .job-summary-content {
+      grid-template-columns: 1fr;
+    }
+
+    .stats-container {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .search-container {
+      width: 200px;
+    }
+
+    .applicants-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .search-container {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .header-left {
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    .header-actions {
+      display: none;
+    }
+
+    .stats-container {
+      grid-template-columns: 1fr;
+    }
+    
+    .applicants-table th,
+    .applicants-table td {
+      padding: 0.75rem;
+    }
+    
+    .match-score {
+      max-width: 150px;
+    }
+  }
+</style>
+{% endblock %}
