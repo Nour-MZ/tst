@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: ['frontend', 'backend', 'database']
+        service: ['CV-format', 'Interview-Questions', 'backend', 'cv-job-matching', 'frontend', 'job-description', 'mysql']
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -26,3 +26,10 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+
+    - name: Build & Push ${{ matrix.service }}
+      run: |
+        cd ${{ env.PROJECT_DIR }}/${{ matrix.service }}
+        docker build -t ${{ env.DOCKERHUB_REPO_PREFIX }}-$(echo "${{ matrix.service }}" | tr '[:upper:]' '[:lower:]'):${{ github.sha }} .
+        docker push ${{ env.DOCKERHUB_REPO_PREFIX }}-$(echo "${{ matrix.service }}" | tr '[:upper:]' '[:lower:]'):${{ github.sha }}
