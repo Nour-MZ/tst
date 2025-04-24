@@ -7,7 +7,7 @@ from openai import OpenAI
 import requests 
 app = Flask(__name__)
 
-OPENAI_API_KEY='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'
+OPENAI_API_KEY=''
 client = OpenAI(api_key=OPENAI_API_KEY) 
 
 def extract_text_from_pdf(pdf_file):

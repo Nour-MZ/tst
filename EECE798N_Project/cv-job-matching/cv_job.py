@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 # HuggingFace Configuration
 HF_API_URL = "https://api-inference.huggingface.co/pipeline/feature-extraction/sentence-transformers/all-MiniLM-L6-v2"
-HF_TOKEN = "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" 
+
 
 def get_embeddings(texts):
     headers = {"Authorization": f"Bearer {HF_TOKEN}"}
