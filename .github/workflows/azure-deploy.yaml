@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: ['CV-format', 'Interview-Questions', 'backend', 'cv-job-matching', 'frontend', 'job-description', 'mysql']
+        service: ['CV-Format', 'Interview-Questions', 'backend', 'cv-job-matching', 'frontend', 'job-description', 'mysql']
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
