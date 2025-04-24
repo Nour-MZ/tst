@@ -33,8 +33,43 @@ jobs:
         cd ${{ env.PROJECT_DIR }}/${{ matrix.service }}
         docker build -t ${{ env.DOCKERHUB_REPO_PREFIX }}-$(echo "${{ matrix.service }}" | tr '[:upper:]' '[:lower:]'):${{ github.sha }} .
         docker push ${{ env.DOCKERHUB_REPO_PREFIX }}-$(echo "${{ matrix.service }}" | tr '[:upper:]' '[:lower:]'):${{ github.sha }}
+  name: Deploy EECE798N Project
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'EECE798N_Project/**'
+  workflow_dispatch:
+
+env:
+  DOCKERHUB_REPO_PREFIX: ${{ secrets.DOCKERHUB_USERNAME }}/eece798n
+  PROJECT_DIR: EECE798N_Project
+
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: ['CV-Format', 'Interview-Questions', 'backend', 'cv-job-matching', 'frontend', 'job-description']
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Docker Login
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+
+    - name: Build & Push ${{ matrix.service }}
+      run: |
+        cd ${{ env.PROJECT_DIR }}/${{ matrix.service }}
+        docker build -t ${{ env.DOCKERHUB_REPO_PREFIX }}-$(echo "${{ matrix.service }}" | tr '[:upper:]' '[:lower:]'):${{ github.sha }} .
+        docker push ${{ env.DOCKERHUB_REPO_PREFIX }}-$(echo "${{ matrix.service }}" | tr '[:upper:]' '[:lower:]'):${{ github.sha }}
     
-    deploy:
+  deploy:
     needs: build-push
     runs-on: ubuntu-latest
     permissions:
