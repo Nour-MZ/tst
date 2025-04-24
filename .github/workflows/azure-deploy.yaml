@@ -57,6 +57,6 @@ jobs:
     - name: Deploy to AKS
       run: |
         az aks get-credentials \
-          --name EECE798N-Cluster \
-          --resource-group EECE798N-RG \
+          --name Test \
+          --resource-group Test_Group \
           --overwrite-existing
