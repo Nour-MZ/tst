@@ -12,6 +12,7 @@ app = Flask(__name__)
 # Configure OpenAI
 OPENAI_API_KEY = ''
 client = OpenAI(api_key=OPENAI_API_KEY)
+#test
     
 @app.route('/generate-job-description', methods=['POST'])
 def generate_job_description():
